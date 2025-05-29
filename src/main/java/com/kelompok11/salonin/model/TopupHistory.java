@@ -22,7 +22,7 @@ public class TopupHistory {
     private Status status;
 
     @Column(nullable = false, name = "midtrans_id")
-    private Integer midtransId;
+    private String midtransId;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -66,11 +66,11 @@ public class TopupHistory {
         this.status = status;
     }
 
-    public Integer getMidtransId() {
+    public String getMidtransId() {
         return midtransId;
     }
 
-    public void setMidtransId(Integer midtransId) {
+    public void setMidtransId(String midtransId) {
         this.midtransId = midtransId;
     }
 

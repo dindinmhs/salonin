@@ -20,6 +20,9 @@ public class User {
     private String email;
     
     @Column(nullable = false)
+    private Integer balance;
+
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -98,6 +101,14 @@ public class User {
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+    
+    public Integer getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Integer balance) {
+        this.balance = balance;
+    }
 
     public enum Role {
         ADMIN, CUSTOMER, EMPLOYEE
@@ -107,6 +118,7 @@ public class User {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        balance = 0;
     }
     
     @PreUpdate
