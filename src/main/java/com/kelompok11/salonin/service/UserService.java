@@ -2,6 +2,10 @@ package com.kelompok11.salonin.service;
 
 import com.kelompok11.salonin.model.User;
 import com.kelompok11.salonin.repository.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,5 +49,38 @@ public class UserService {
         user.setRole(role);
         
         return userRepository.save(user);
+    }
+    
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+    
+    public User updateUser(User user) {
+        // Check if email already exists and it's not the same user
+        if (userRepository.existsByEmail(user.getEmail()) && 
+            !userRepository.findByEmail(user.getEmail()).get().getId().equals(user.getId())) {
+            throw new RuntimeException("Email already registered by another user!");
+        }
+        
+        // If password is empty, it means we don't want to update it
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            // Get current password from database
+            User existingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+            user.setPassword(existingUser.getPassword());
+        } else {
+            // Encrypt new password
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        
+        return userRepository.save(user);
+    }
+    
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }
