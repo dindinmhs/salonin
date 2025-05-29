@@ -57,8 +57,8 @@
                 snap.pay(token, {
                     onSuccess: function(result){
                         document.getElementById('result-json').innerHTML = 'Pembayaran berhasil!';
-                        // Redirect ke halaman sukses atau refresh saldo
-                        window.location.href = '/dashboard';
+                        // Redirect to history page instead of dashboard
+                        window.location.href = '/topup/history';
                     },
                     onPending: function(result){
                         document.getElementById('result-json').innerHTML = 'Menunggu pembayaran...';

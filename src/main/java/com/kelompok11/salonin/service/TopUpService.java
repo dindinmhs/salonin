@@ -4,6 +4,9 @@ import com.kelompok11.salonin.model.TopupHistory;
 import com.kelompok11.salonin.model.User;
 import com.kelompok11.salonin.repository.TopupHistoryRepository;
 import com.kelompok11.salonin.repository.UserRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +35,13 @@ public class TopUpService {
             userRepository.save(user);
             topupHistoryRepository.save(history);
         }
+    }
+
+    public List<TopupHistory> getTopupHistoryByUser(User user) {
+        return topupHistoryRepository.findByUserOrderByCreatedAtDesc(user);
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 }
