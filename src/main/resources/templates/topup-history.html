@@ -22,15 +22,17 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr th:each="history : ${histories}">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${#temporals.format(history.createdAt, 'dd MMM yyyy HH:mm')}"></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${history.midtransId}"></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${#numbers.formatDecimal(history.amount, 0, 'COMMA', 0, 'POINT')}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${history?.createdAt != null ? #temporals.format(history.createdAt, 'dd MMM yyyy HH:mm') : '-'}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${history?.midtransId ?: '-'}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${history?.amount != null ? #numbers.formatDecimal(history.amount, 0, 'COMMA', 0, 'POINT') : '-'}"></td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                  th:classappend="${history.status == T(com.kelompok11.salonin.model.TopupHistory.Status).SUKSES ? 'bg-green-100 text-green-800' : 
-                                                   (history.status == T(com.kelompok11.salonin.model.TopupHistory.Status).PENDING ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')}"
-                                  th:text="${history.status}"></span>
-                        </td>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                                  th:text="${history.status}">
+                            </span>
+                        </td>                        
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(histories)}">
+                        <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Tidak ada riwayat top up</td>
                     </tr>
                 </tbody>
             </table>

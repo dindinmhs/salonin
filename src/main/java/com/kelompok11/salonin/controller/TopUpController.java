@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -79,6 +78,9 @@ public class TopUpController {
         history.setStatus(TopupHistory.Status.SUKSES);
         history.setCreatedAt(LocalDateTime.now());
         
+        // Update balance user
+        user.setBalance(user.getBalance() + amount);
+        
         Map<String, Object> params = new HashMap<>();
         
         Map<String, String> transactionDetails = new HashMap<>();
@@ -103,7 +105,21 @@ public class TopUpController {
     }
 
     @GetMapping("/history")
-    public String topupHistory(Model model, @AuthenticationPrincipal User user) {
+    public String topupHistory(Model model) {
+        // Dapatkan user dari SecurityContext
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth.getName().equals("anonymousUser")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+        }
+        
+        // Dapatkan user dari database berdasarkan email
+        String email = auth.getName();
+        User user = topUpService.findUserByEmail(email);
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
+        }
+        
         List<TopupHistory> histories = topUpService.getTopupHistoryByUser(user);
         model.addAttribute("histories", histories);
         return "topup-history";

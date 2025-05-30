@@ -69,7 +69,7 @@
 
         <!-- Quick Actions Grid -->
         <!-- Di bagian admin section, tambahkan: -->
-        <div th:if="${user.role.name() == 'ADMIN'}" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <!-- Admin Actions -->
             <div th:if="${userRole == 'ADMIN'}">
                 <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
@@ -174,7 +174,7 @@
                 </button>
             </div>
             <!-- Service Management Card -->
-            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div th:if="${userRole == 'ADMIN'}" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                 <div class="flex items-center justify-between mb-4">
                     <div class="bg-purple-100 p-3 rounded-lg">
                         <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
