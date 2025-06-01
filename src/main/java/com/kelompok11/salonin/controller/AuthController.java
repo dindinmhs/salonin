@@ -1,7 +1,13 @@
 package com.kelompok11.salonin.controller;
 
+import com.kelompok11.salonin.model.Booking;
 import com.kelompok11.salonin.model.User;
+import com.kelompok11.salonin.service.BookingService;
 import com.kelompok11.salonin.service.UserService;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,12 +20,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AuthController {
+
+    private final BookingService bookingService;
     
     @Autowired
     private UserService userService;
     
-    public AuthController() {
-        
+    public AuthController(BookingService bookingService) {
+        this.bookingService = bookingService;
+
     }
     
     @GetMapping("/")
@@ -60,6 +69,32 @@ public class AuthController {
         
         model.addAttribute("user", user);
         model.addAttribute("userRole", user.getRole().toString());
+
+        List<Booking> bookings;
+    
+        // Different logic based on user role
+        if (user.getRole() == User.Role.ADMIN) {
+            // Admin can see all bookings
+            bookings = bookingService.getAllBookings();
+            model.addAttribute("allBookings", bookings);
+        } else if (user.getRole() == User.Role.EMPLOYEE) {
+            // Employee can see bookings assigned to them
+            bookings = bookingService.getBookingsByEmployee(user);
+            model.addAttribute("allBookings", bookings);
+            // Add pending bookings for employees
+            List<Booking> pendingBookings = bookings.stream()
+                .filter(b -> b.getStatus() == Booking.Status.PENDING)
+                .collect(Collectors.toList());
+            model.addAttribute("pendingBookings", pendingBookings);
+            List<Booking> acceptedBookings = bookings.stream()
+                .filter(b -> b.getStatus() == Booking.Status.DITERIMA)
+                .collect(Collectors.toList());
+            model.addAttribute("acceptedBookings", acceptedBookings);
+        } else {
+            // Customer can only see their own bookings
+            bookings = bookingService.getBookingsByCustomer(user);
+            model.addAttribute("bookings", bookings); // Changed from allBookings to bookings for customers
+        }
         
         return "dashboard";
     }

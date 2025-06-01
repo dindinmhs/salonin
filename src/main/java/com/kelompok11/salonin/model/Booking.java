@@ -22,6 +22,10 @@ public class Booking {
     private User employee;
 
     @ManyToOne
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
+
+    @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
@@ -42,7 +46,7 @@ public class Booking {
     private LocalDateTime updatedAt;
 
     public enum Status {
-        PENDING, SUKSES, GAGAL
+        PENDING, SELESAI, BATAL, DITERIMA
     }
     public Booking() {
     }
@@ -117,6 +121,14 @@ public class Booking {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 
     @PrePersist

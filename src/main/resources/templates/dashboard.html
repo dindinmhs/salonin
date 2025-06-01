@@ -62,8 +62,17 @@
             <div th:if="${userRole == 'EMPLOYEE'}" class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded">
                 <strong>Employee Access:</strong> You can manage appointments and provide services to customers.
             </div>
-            <div th:if="${userRole == 'CUSTOMER'}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                <strong>Customer Access:</strong> Book appointments and manage your beauty treatments.
+            <!-- Add this after the welcome message for customers -->
+            <div th:if="${userRole == 'CUSTOMER'}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <div class="flex justify-between items-center">
+                    <span>
+                        <strong>Your Balance:</strong>
+                        <span th:text="'Rp ' + ${#numbers.formatDecimal(user.balance, 0, 'COMMA', 0, 'POINT')}">Rp 0</span>
+                    </span>
+                    <a href="/topup" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                        Top Up
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -128,9 +137,9 @@
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Book Appointment</h3>
                     <p class="text-gray-600 text-sm mb-4">Schedule your next beauty treatment</p>
-                    <button class="w-full bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-lg transition-colors">
+                    <a href="/bookings/new" class="block w-full bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-lg transition-colors text-center">
                         Book Now
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -185,6 +194,161 @@
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Service Management</h3>
                 <p class="text-gray-600 text-sm mb-4">Manage salon services and treatments</p>
                 <a href="/admin/services" class="text-purple-600 hover:text-purple-700 font-medium text-sm">Manage Services →</a>
+            </div>
+        </div>
+
+        <!-- Customer Bookings List Section -->
+        <div th:if="${userRole == 'CUSTOMER'}" class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Your Bookings</h2>
+                <a href="/bookings/new" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                    New Booking
+                </a>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(bookings)}" class="text-gray-500 text-center py-8">
+                <p>You don't have any bookings yet.</p>
+                <a href="/bookings/new" class="text-rose-500 hover:text-rose-600 font-medium inline-block mt-2">Book your first appointment →</a>
+            </div>
+            
+            <div th:unless="${#lists.isEmpty(bookings)}" class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Branch</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stylist</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr th:each="booking : ${bookings}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.branch.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.service.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.employee.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"></span>
+                                <span th:text="${booking.time}"></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span th:class="${booking.status == 'PENDING' ? 'bg-yellow-100 text-yellow-800' : (booking.status == 'SELESAI' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')}" 
+                                      class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                      th:text="${booking.status}"></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${'Rp ' + #numbers.formatDecimal(booking.service.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Admin/Employee Bookings Management Section -->
+        <div th:if="${userRole == 'ADMIN' or userRole == 'EMPLOYEE'}" class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Manage Bookings</h2>
+            
+            <div th:if="${#lists.isEmpty(pendingBookings)}" class="text-gray-500 text-center py-4 mb-6">
+                <p>No pending bookings to manage.</p>
+            </div>
+            
+            <div th:unless="${#lists.isEmpty(pendingBookings)}" class="overflow-x-auto mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Pending Bookings</h3>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stylist</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr th:each="booking : ${pendingBookings}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.user.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.service.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.employee.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"></span>
+                                <span th:text="${booking.time}"></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <form th:action="@{/bookings/{id}/status(id=${booking.id})}" method="post" class="inline">
+                                    <input type="hidden" name="status" value="DITERIMA">
+                                    <button type="submit" class="text-green-600 hover:text-green-900 mr-3">Accept</button>
+                                </form>
+                                <form th:action="@{/bookings/{id}/status(id=${booking.id})}" method="post" class="inline">
+                                    <input type="hidden" name="status" value="BATAL">
+                                    <button type="submit" class="text-red-600 hover:text-red-900">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(acceptedBookings)}" class="overflow-x-auto mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Accepted Bookings</h3>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stylist</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr th:each="booking : ${acceptedBookings}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.user.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.service.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.employee.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"></span>
+                                <span th:text="${booking.time}"></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <form th:action="@{/bookings/{id}/status(id=${booking.id})}" method="post" class="inline">
+                                    <input type="hidden" name="status" value="SELESAI">
+                                    <button type="submit" class="text-green-600 hover:text-green-900 mr-3">Selesai</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">All Bookings</h3>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stylist</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr th:each="booking : ${allBookings}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.user.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.service.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.employee.name}"></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"></span>
+                                <span th:text="${booking.time}"></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span th:class="${booking.status == 'PENDING' ? 'bg-yellow-100 text-yellow-800' : (booking.status == 'SELESAI' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')}" 
+                                      class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                      th:text="${booking.status}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

@@ -2,6 +2,7 @@ package com.kelompok11.salonin.controller;
 
 import com.kelompok11.salonin.model.User;
 import com.kelompok11.salonin.service.UserService;
+import com.kelompok11.salonin.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,9 @@ public class UserManagementController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private BranchService branchService;
     
     private final String uploadDir = "src/main/resources/static/images/users/";
     
@@ -53,7 +57,7 @@ public class UserManagementController {
         }
         
         model.addAttribute("user", new User());
-        model.addAttribute("roles", User.Role.values());
+        model.addAttribute("branches", branchService.getAllBranches());
         return "admin/users/form";
     }
     
@@ -67,13 +71,19 @@ public class UserManagementController {
         User user = userService.getUserById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         
+        // Only allow editing EMPLOYEE users
+        if (user.getRole() != User.Role.EMPLOYEE) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Can only edit staff members");
+            return "redirect:/admin/users";
+        }
+        
         model.addAttribute("user", user);
-        model.addAttribute("roles", User.Role.values());
+        model.addAttribute("branches", branchService.getAllBranches());
         return "admin/users/form";
     }
     
     @PostMapping
-    public String createOrUpdateUser(@ModelAttribute User user, @RequestParam("imageFile") MultipartFile imageFile, 
+    public String createOrUpdateUser(@ModelAttribute User user, @RequestParam("imageFile") MultipartFile imageFile,
                                    RedirectAttributes redirectAttributes) {
         if (!isAdmin()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Access denied. Admin privileges required.");
@@ -81,6 +91,9 @@ public class UserManagementController {
         }
         
         try {
+            // Force role to EMPLOYEE
+            user.setRole(User.Role.EMPLOYEE);
+            
             // Handle image upload if provided
             if (!imageFile.isEmpty()) {
                 // Create directory if it doesn't exist
@@ -104,13 +117,17 @@ public class UserManagementController {
             
             // Save or update user
             if (user.getId() == null) {
-                // New user
-                userService.createUserWithRole(user.getName(), user.getEmail(), user.getPassword(), user.getRole());
-                redirectAttributes.addFlashAttribute("successMessage", "User created successfully!");
+                userService.createUserWithRole(user.getName(), user.getEmail(), user.getPassword(), User.Role.EMPLOYEE);
+                redirectAttributes.addFlashAttribute("successMessage", "Staff member created successfully!");
             } else {
-                // Existing user
+                // Verify user is an EMPLOYEE before updating
+                User existingUser = userService.getUserById(user.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + user.getId()));
+                if (existingUser.getRole() != User.Role.EMPLOYEE) {
+                    throw new RuntimeException("Can only update staff members");
+                }
                 userService.updateUser(user);
-                redirectAttributes.addFlashAttribute("successMessage", "User updated successfully!");
+                redirectAttributes.addFlashAttribute("successMessage", "Staff member updated successfully!");
             }
             
             return "redirect:/admin/users";

@@ -84,6 +84,15 @@
                             </svg>
                             <span th:text="${branch.city + ', ' + branch.province}" class="text-sm">City, Province</span>
                         </div>
+                        <!-- Add Operating Hours -->
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm">
+                                <span th:text="${#temporals.format(branch.openTime, 'HH:mm')} + ' - ' + ${#temporals.format(branch.closeTime, 'HH:mm')}">09:00 - 17:00</span>
+                            </span>
+                        </div>
                     </div>
                     
                     <!-- Action Buttons -->

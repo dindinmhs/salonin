@@ -5,6 +5,7 @@ import com.kelompok11.salonin.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -82,5 +83,15 @@ public class UserService {
     
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+    
+    // Add this method to UserService
+    public List<User> findAllByRole(User.Role role) {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRole() == role)
+                .collect(Collectors.toList());
+    }
+    public List<User> getUsersByBranch(Long branchId) {
+        return userRepository.findByBranchId(branchId);
     }
 }

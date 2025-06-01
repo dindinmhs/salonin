@@ -1,6 +1,7 @@
 package com.kelompok11.salonin.service;
 
 import com.kelompok11.salonin.model.Service;
+import com.kelompok11.salonin.model.User;
 import com.kelompok11.salonin.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,5 +43,9 @@ public class ServiceService {
         com.kelompok11.salonin.model.Service service = serviceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Service not found"));
         serviceRepository.delete(service);
+    }
+
+    public List<Service> getServicesByBranch(Long branchId) {
+        return serviceRepository.findByBranchId(branchId);
     }
 }
