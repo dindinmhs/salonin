@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Salonin Beauty Salon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="/dashboard" class="text-2xl font-bold text-gray-800">Salonin</a>
+                </div>
+                
+                <!-- User Info & Logout -->
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span th:text="${user.name}" class="font-medium"></span></span>
+                    <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium" th:text="${userRole}"></span>
+                    <form th:action="@{/logout}" method="post" class="inline">
+                        <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notifications Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-900">Notifikasi</h1>
+                <button id="mark-all-read" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                    Tandai Semua Dibaca
+                </button>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(notifications)}" class="text-gray-500 text-center py-8">
+                <p>Anda tidak memiliki notifikasi.</p>
+            </div>
+            
+            <div th:unless="${#lists.isEmpty(notifications)}" class="space-y-4">
+                <div th:each="notification : ${notifications}" th:class="${notification.isRead ? 'bg-gray-50' : 'bg-blue-50'}" class="p-4 rounded-lg transition-colors notification-item" th:data-id="${notification.id}">
+                    <div class="flex justify-between">
+                        <h3 class="font-semibold text-gray-900" th:text="${notification.title}">Notification Title</h3>
+                        <span class="text-xs text-gray-500" th:text="${#temporals.format(notification.createdAt, 'dd MMM yyyy HH:mm')}">Date</span>
+                    </div>
+                    <p class="text-gray-700 mt-1" th:text="${notification.message}">Notification message goes here...</p>
+                    <button th:unless="${notification.isRead}" class="mark-as-read mt-2 text-sm text-blue-600 hover:text-blue-800">
+                        Tandai Dibaca
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <a href="/dashboard" class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition-colors">
+                Kembali ke Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Mark single notification as read
+        document.querySelectorAll('.mark-as-read').forEach(button => {
+            button.addEventListener('click', function() {
+                const notificationItem = this.closest('.notification-item');
+                const notificationId = notificationItem.dataset.id;
+                
+                fetch(`/notifications/api/${notificationId}/read`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        notificationItem.classList.remove('bg-blue-50');
+                        notificationItem.classList.add('bg-gray-50');
+                        this.remove();
+                    }
+                })
+                .catch(error => console.error('Error marking notification as read:', error));
+            });
+        });
+        
+        // Mark all notifications as read
+        document.getElementById('mark-all-read').addEventListener('click', function() {
+            fetch('/notifications/api/read-all', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelectorAll('.notification-item').forEach(item => {
+                        item.classList.remove('bg-blue-50');
+                        item.classList.add('bg-gray-50');
+                    });
+                    document.querySelectorAll('.mark-as-read').forEach(button => {
+                        button.remove();
+                    });
+                }
+            })
+            .catch(error => console.error('Error marking all notifications as read:', error));
+        });
+    </script>
+</body>
+</html>

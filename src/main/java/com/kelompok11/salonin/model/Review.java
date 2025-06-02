@@ -11,10 +11,6 @@ public class Review {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
 
@@ -39,14 +35,6 @@ public class Review {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Booking getBooking() {

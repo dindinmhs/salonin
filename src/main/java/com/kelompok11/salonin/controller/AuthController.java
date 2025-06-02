@@ -3,9 +3,13 @@ package com.kelompok11.salonin.controller;
 import com.kelompok11.salonin.model.Booking;
 import com.kelompok11.salonin.model.User;
 import com.kelompok11.salonin.service.BookingService;
+import com.kelompok11.salonin.service.NotificationsService;
+import com.kelompok11.salonin.service.ReviewService;
 import com.kelompok11.salonin.service.UserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,12 @@ public class AuthController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private ReviewService reviewService;
+    
+    @Autowired
+    private NotificationsService notificationsService;
     
     public AuthController(BookingService bookingService) {
         this.bookingService = bookingService;
@@ -69,6 +79,10 @@ public class AuthController {
         
         model.addAttribute("user", user);
         model.addAttribute("userRole", user.getRole().toString());
+        
+        // Add unread notifications count
+        long unreadNotificationsCount = notificationsService.countUnreadNotifications(user);
+        model.addAttribute("unreadNotificationsCount", unreadNotificationsCount);
 
         List<Booking> bookings;
     
@@ -93,7 +107,16 @@ public class AuthController {
         } else {
             // Customer can only see their own bookings
             bookings = bookingService.getBookingsByCustomer(user);
-            model.addAttribute("bookings", bookings); // Changed from allBookings to bookings for customers
+            model.addAttribute("bookings", bookings); 
+            Map<Long, Boolean> reviewExistenceMap = new HashMap<>();
+            for (Booking booking : bookings) {
+                boolean exists = reviewService.findByBookingId(booking.getId()).isPresent();
+                reviewExistenceMap.put(booking.getId(), exists);
+            }
+            model.addAttribute("reviewExistMap", reviewExistenceMap);
+            boolean hasSelesaiBooking = bookings.stream()
+                .anyMatch(b -> b.getStatus() == Booking.Status.SELESAI);
+            model.addAttribute("hasSelesaiBooking", hasSelesaiBooking);
         }
         
         return "dashboard";
