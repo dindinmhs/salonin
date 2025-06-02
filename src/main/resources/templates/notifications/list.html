@@ -36,12 +36,19 @@
 
     <!-- Notifications Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Flash Message -->
+        <div th:if="${success}" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">
+            <p th:text="${success}">Success message</p>
+        </div>
+        
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold text-gray-900">Notifikasi</h1>
-                <button id="mark-all-read" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                    Tandai Semua Dibaca
-                </button>
+                <form th:action="@{/notifications/read-all}" method="post">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                        Tandai Semua Dibaca
+                    </button>
+                </form>
             </div>
             
             <div th:if="${#lists.isEmpty(notifications)}" class="text-gray-500 text-center py-8">
@@ -49,15 +56,17 @@
             </div>
             
             <div th:unless="${#lists.isEmpty(notifications)}" class="space-y-4">
-                <div th:each="notification : ${notifications}" th:class="${notification.isRead ? 'bg-gray-50' : 'bg-blue-50'}" class="p-4 rounded-lg transition-colors notification-item" th:data-id="${notification.id}">
+                <div th:each="notification : ${notifications}" th:class="${notification.isRead ? 'bg-gray-50' : 'bg-blue-50'}" class="p-4 rounded-lg transition-colors notification-item">
                     <div class="flex justify-between">
                         <h3 class="font-semibold text-gray-900" th:text="${notification.title}">Notification Title</h3>
                         <span class="text-xs text-gray-500" th:text="${#temporals.format(notification.createdAt, 'dd MMM yyyy HH:mm')}">Date</span>
                     </div>
                     <p class="text-gray-700 mt-1" th:text="${notification.message}">Notification message goes here...</p>
-                    <button th:unless="${notification.isRead}" class="mark-as-read mt-2 text-sm text-blue-600 hover:text-blue-800">
-                        Tandai Dibaca
-                    </button>
+                    <form th:unless="${notification.isRead}" th:action="@{/notifications/{id}/read(id=${notification.id})}" method="post" class="mt-2">
+                        <button type="submit" class="text-sm text-blue-600 hover:text-blue-800">
+                            Tandai Dibaca
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -70,52 +79,19 @@
     </div>
     
     <script>
-        // Mark single notification as read
-        document.querySelectorAll('.mark-as-read').forEach(button => {
-            button.addEventListener('click', function() {
-                const notificationItem = this.closest('.notification-item');
-                const notificationId = notificationItem.dataset.id;
-                
-                fetch(`/notifications/api/${notificationId}/read`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
+        // Hanya menyimpan script untuk polling notifikasi count
+        function updateNotificationCount() {
+            fetch('/notifications/api/count')
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        notificationItem.classList.remove('bg-blue-50');
-                        notificationItem.classList.add('bg-gray-50');
-                        this.remove();
-                    }
+                    // Implementasi update count jika diperlukan
+                    console.log('Unread notifications:', data.count);
                 })
-                .catch(error => console.error('Error marking notification as read:', error));
-            });
-        });
+                .catch(error => console.error('Error fetching notification count:', error));
+        }
         
-        // Mark all notifications as read
-        document.getElementById('mark-all-read').addEventListener('click', function() {
-            fetch('/notifications/api/read-all', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.querySelectorAll('.notification-item').forEach(item => {
-                        item.classList.remove('bg-blue-50');
-                        item.classList.add('bg-gray-50');
-                    });
-                    document.querySelectorAll('.mark-as-read').forEach(button => {
-                        button.remove();
-                    });
-                }
-            })
-            .catch(error => console.error('Error marking all notifications as read:', error));
-        });
+        // Polling setiap 30 detik
+        setInterval(updateNotificationCount, 30000);
     </script>
 </body>
 </html>

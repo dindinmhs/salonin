@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,43 +60,29 @@ public class NotificationsController {
         return ResponseEntity.ok(response);
     }
     
-    @GetMapping("/api/list")
-    @ResponseBody
-    public ResponseEntity<List<Notifications>> getNotifications() {
-        // Get current authenticated user
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        User user = userService.findByEmail(email);
-        
-        List<Notifications> notifications = notificationsService.getNotificationsByUser(user);
-        
-        return ResponseEntity.ok(notifications);
-    }
+    // Menghapus endpoint API yang tidak diperlukan
+    // @GetMapping("/api/list")
+    // @ResponseBody
+    // public ResponseEntity<List<Notifications>> getNotifications() { ... }
     
-    @PostMapping("/api/{id}/read")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> markAsRead(@PathVariable Long id) {
+    // Mengubah endpoint mark as read menjadi form submission
+    @PostMapping("/{id}/read")
+    public String markAsRead(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         notificationsService.markAsRead(id);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        
-        return ResponseEntity.ok(response);
+        redirectAttributes.addFlashAttribute("success", "Notifikasi telah ditandai sebagai dibaca");
+        return "redirect:/notifications";
     }
     
-    @PostMapping("/api/read-all")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> markAllAsRead() {
+    // Mengubah endpoint mark all as read menjadi form submission
+    @PostMapping("/read-all")
+    public String markAllAsRead(RedirectAttributes redirectAttributes) {
         // Get current authenticated user
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         User user = userService.findByEmail(email);
         
         notificationsService.markAllAsRead(user);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        
-        return ResponseEntity.ok(response);
+        redirectAttributes.addFlashAttribute("success", "Semua notifikasi telah ditandai sebagai dibaca");
+        return "redirect:/notifications";
     }
 }
