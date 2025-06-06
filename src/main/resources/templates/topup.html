@@ -1,82 +1,144 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Top Up - Salonin Beauty Salon</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Inter', sans-serif; }
+      body {
+        font-family: "Inter", sans-serif;
+      }
     </style>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-</head>
-<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
-    <div class="max-w-md mx-auto px-4 py-8">
-        <div class="bg-white rounded-2xl shadow-lg p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-900">Top Up Saldo</h1>
-                <a href="/topup/history" class="text-sm font-medium text-rose-600 hover:text-rose-700 flex items-center">
-                    Lihat Riwayat
-                </a>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  </head>
+  <body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="/dashboard" class="text-2xl font-bold text-gray-800">Salonin</a>
+                </div>
+                
+                <!-- Notifications -->
+                <div class="relative mr-4">
+                    <a href="/notifications" class="text-gray-600 hover:text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span th:if="${unreadNotificationsCount > 0}" id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" th:text="${unreadNotificationsCount}">0</span>
+                    </a>
+                </div>
+                
+                <!-- User Info & Logout -->
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span th:text="${user.name}" class="font-medium"></span></span>
+                    <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium" th:text="${userRole}"></span>
+                    <form th:action="@{/logout}" method="post" class="inline">
+                        <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
-            
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-medium mb-2">Jumlah Top Up</label>
-                <input type="number" id="amount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="Masukkan jumlah">
-            </div>
-            
-            <button id="pay-button" class="w-full bg-rose-500 hover:bg-rose-600 text-white py-3 px-4 rounded-lg transition-colors">
-                Top Up Sekarang
-            </button>
-            
-            <div id="result-json" class="mt-4 text-sm text-gray-600"></div>
         </div>
+    </nav>
+
+    <div class="max-w-md mx-auto px-4 py-8">
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-2xl font-bold text-gray-900">Top Up Saldo</h1>
+          <a
+            href="/topup/history"
+            class="text-sm font-medium text-rose-600 hover:text-rose-700 flex items-center"
+          >
+            Lihat Riwayat
+          </a>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-medium mb-2"
+            >Jumlah Top Up</label
+          >
+          <input
+            type="number"
+            id="amount"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+            placeholder="Masukkan jumlah"
+          />
+        </div>
+
+        <button
+          id="pay-button"
+          class="w-full bg-rose-500 hover:bg-rose-600 text-white py-3 px-4 rounded-lg transition-colors"
+        >
+          Top Up Sekarang
+        </button>
+
+        <div id="result-json" class="mt-4 text-sm text-gray-600"></div>
+      </div>
     </div>
 
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-640_LN6e1AYjHKtL"></script>
+    <script
+      src="https://app.sandbox.midtrans.com/snap/snap.js"
+      data-client-key="SB-Mid-client-640_LN6e1AYjHKtL"
+    ></script>
     <script th:inline="javascript">
-        document.getElementById('pay-button').onclick = function(){
-            const amount = document.getElementById('amount').value;
-            
-            // Kirim request ke backend untuk mendapatkan token
-            // Add this before your fetch call
-            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-            
-            fetch('/topup/token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    [csrfHeader]: csrfToken
-                },
-                body: JSON.stringify({
-                    amount: amount
-                }),
-                credentials: 'same-origin'
-            })
-            .then(response => response.text())
-            .then(token => {
-                console.log(token);
-                snap.pay(token, {
-                    onSuccess: function(result){
-                        document.getElementById('result-json').innerHTML = 'Pembayaran berhasil!';
-                        // Ubah redirect ke halaman top-up, bukan ke halaman riwayat
-                        window.location.href = '/topup';
-                    },
-                    onPending: function(result){
-                        document.getElementById('result-json').innerHTML = 'Menunggu pembayaran...';
-                    },
-                    onError: function(result){
-                        document.getElementById('result-json').innerHTML = 'Pembayaran gagal!';
-                    },
-                    onClose: function(){
-                        document.getElementById('result-json').innerHTML = 'Pembayaran dibatalkan';
-                    }
-                });
+      document.getElementById("pay-button").onclick = function () {
+        const amount = document.getElementById("amount").value;
+
+        // Kirim request ke backend untuk mendapatkan token
+        // Add this before your fetch call
+        const csrfToken = document
+          .querySelector('meta[name="_csrf"]')
+          .getAttribute("content");
+        const csrfHeader = document
+          .querySelector('meta[name="_csrf_header"]')
+          .getAttribute("content");
+
+        fetch("/topup/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            [csrfHeader]: csrfToken,
+          },
+          body: JSON.stringify({
+            amount: amount,
+          }),
+          credentials: "same-origin",
+        })
+          .then((response) => response.text())
+          .then((token) => {
+            console.log(token);
+            snap.pay(token, {
+              onSuccess: function (result) {
+                document.getElementById("result-json").innerHTML =
+                  "Pembayaran berhasil!";
+                // Ubah redirect ke halaman top-up, bukan ke halaman riwayat
+                window.location.href = "/topup";
+              },
+              onPending: function (result) {
+                document.getElementById("result-json").innerHTML =
+                  "Menunggu pembayaran...";
+              },
+              onError: function (result) {
+                document.getElementById("result-json").innerHTML =
+                  "Pembayaran gagal!";
+              },
+              onClose: function () {
+                document.getElementById("result-json").innerHTML =
+                  "Pembayaran dibatalkan";
+              },
             });
-        };
+          });
+      };
     </script>
-</body>
+  </body>
 </html>
