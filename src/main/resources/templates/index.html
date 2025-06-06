@@ -7,31 +7,135 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            scroll-behavior: smooth;
+        }
+        
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #ec4899, #f97316, #8b5cf6);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-shine:hover::before {
+            left: 100%;
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-border {
+            animation: pulseBorder 2s infinite;
+        }
+        
+        @keyframes pulseBorder {
+            0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(236, 72, 153, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
+        }
+        
+        .slide-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideIn 0.8s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .service-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .service-icon {
+            transition: transform 0.3s ease;
+        }
+
+        /* Image sliding animation */
+        .image-slide {
+            transition: transform 0.5s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+<body class="bg-gradient-to-br from-pink-50 via-rose-50 to-purple-100 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <nav class="bg-white/90 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-b border-rose-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-gray-800">Salonin</h1>
+                <div class="flex items-center floating">
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
+                        Salonin
+                    </h1>
                 </div>
                 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="text-gray-700 hover:text-rose-600 transition-colors">Home</a>
-                    <a href="#" class="text-gray-700 hover:text-rose-600 transition-colors">Services</a>
-                    <a href="#" class="text-gray-700 hover:text-rose-600 transition-colors">Our Team</a>
-                    <a href="#" class="text-gray-700 hover:text-rose-600 transition-colors">Contacts</a>
+                    <a href="#" class="text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 font-medium">Home</a>
+                    <a href="#" class="text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 font-medium">Services</a>
+                    <a href="#" class="text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 font-medium">Our Team</a>
+                    <a href="#" class="text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 font-medium">Contacts</a>
                 </div>
                 
                 <!-- Auth Buttons -->
                 <div class="flex items-center space-x-4">
-                    <a href="/login" class="text-gray-700 hover:text-rose-600 transition-colors">Login</a>
-                    <a href="/register" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">Sign Up</a>
+                    <a href="/login" class="text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 font-medium px-4 py-2 rounded-full hover:bg-rose-50">
+                        Login
+                    </a>
+                    <a href="/register" class="btn-gradient text-white px-6 py-2.5 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold btn-shine">
+                        Sign Up
+                    </a>
                 </div>
             </div>
         </div>
@@ -42,52 +146,128 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Content -->
-                <div class="space-y-8">
-                    <div class="text-sm text-gray-600 font-medium">Berlin, Germany</div>
+                <div class="space-y-8 slide-in">
+                    <div class="text-sm text-gray-600 font-medium bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full inline-block">
+                        📍 Berlin, Germany
+                    </div>
                     
                     <h1 class="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                         All for the sake of your 
-                        <span class="text-rose-400">beauty</span>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-pink-500 to-purple-600">
+                            beauty
+                        </span>
                     </h1>
                     
-                    <div class="flex items-center space-x-6">
-                        <a href="#" class="bg-black text-white px-8 py-3 rounded-full hover:bg-gray-800 transition-colors">
-                            Booking Now
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                        <a href="#" class="group bg-black text-white px-8 py-4 rounded-full hover:bg-gray-800 transition-all duration-300 hover:scale-105 hover:shadow-xl font-semibold btn-shine pulse-border">
+                            <span class="flex items-center space-x-2">
+                                <span>Booking Now</span>
+                                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </span>
                         </a>
-                        <button class="flex items-center space-x-2 text-gray-700 hover:text-rose-600 transition-colors">
-                            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        
+                        <button class="group flex items-center space-x-3 text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 hover:-translate-y-2">
+                            <div class="w-14 h-14 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:bg-rose-50 group-hover:-translate-y-1">
+                                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
                                 </svg>
                             </div>
-                            <span class="font-medium">See the workflow</span>
+                            <div class="text-left group-hover:-translate-y-1 transition-all duration-300">
+                                <span class="font-semibold block">See the workflow</span>
+                                <span class="text-sm text-gray-500 group-hover:text-rose-400 transition-colors duration-300">Watch our process</span>
+                            </div>
                         </button>
                     </div>
                 </div>
                 
                 <!-- Right Content - Image -->
-                <div class="relative">
-                    <div class="relative z-10">
-                        <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D.jpg" 
+                <div class="relative slide-in floating">
+                    <div class="relative z-10 cursor-pointer" onclick="switchImage()">
+                        <img id="heroImage" src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                              alt="Beautiful woman with elegant hairstyle" 
-                             class="rounded-full w-96 h-96 object-cover shadow-2xl">
+                             class="image-slide rounded-full w-96 h-96 object-cover shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105">
                     </div>
-                    <!-- Background Circle -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-rose-200 to-pink-300 rounded-full transform scale-110 -z-10"></div>
+                    <!-- Background Circle (static) -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-rose-200 via-pink-300 to-purple-300 rounded-full transform scale-110 -z-10"></div>
+                    <!-- Decorative elements -->
+                    <div class="absolute -top-4 -right-4 w-8 h-8 bg-yellow-400 rounded-full animate-bounce"></div>
+                    <div class="absolute -bottom-4 -left-4 w-6 h-6 bg-pink-400 rounded-full animate-bounce" style="animation-delay: 0.5s;"></div>
+                    <!-- Switch indicator -->
+                    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                        <div id="dot1" class="w-3 h-3 bg-white rounded-full shadow-md transition-all duration-300 opacity-100"></div>
+                        <div id="dot2" class="w-3 h-3 bg-white/50 rounded-full shadow-md transition-all duration-300 opacity-50"></div>
+                    </div>
                 </div>
+                
+                <script>
+                let currentImage = 0;
+                let isSlided = false;
+                const images = [
+                    "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                ];
+
+
+                function switchImage() {
+                    const img = document.getElementById('heroImage');
+                    const dot1 = document.getElementById('dot1');
+                    const dot2 = document.getElementById('dot2');
+                    
+                    if (!isSlided) {
+                        // First click: slide to right edge of the pink oval background
+                        currentImage = currentImage === 0 ? 1 : 0;
+                        img.src = images[currentImage];
+                        
+                        // Move image to the far right edge of pink oval background
+                        // Pink oval is scale-110 of 384px (w-96), so it's about 422px diameter
+                        // To reach the right edge, we need to move about 80-100px from center
+                        img.style.transform = 'translateX(180px)';
+                        isSlided = true;
+                        
+                        // Update dots
+                        if (currentImage === 1) {
+                            dot1.style.opacity = '0.5';
+                            dot2.style.opacity = '1';
+                        } else {
+                            dot1.style.opacity = '1';
+                            dot2.style.opacity = '0.5';
+                        }
+                    } else {
+                        // Second click: slide back to center and change image
+                        currentImage = currentImage === 0 ? 1 : 0;
+                        img.src = images[currentImage];
+                        
+                        // Slide back to center
+                        img.style.transform = 'translateX(0)';
+                        isSlided = false;
+                        
+                        // Update dots
+                        if (currentImage === 1) {
+                            dot1.style.opacity = '0.5';
+                            dot2.style.opacity = '1';
+                        } else {
+                            dot1.style.opacity = '1';
+                            dot2.style.opacity = '0.5';
+                        }
+                    }
+                }
+                </script>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section class="bg-gray-900 text-white py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white py-20 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Content -->
-                <div class="space-y-6">
-                    <div class="text-6xl font-bold text-gray-500">02/</div>
+                <div class="space-y-6 slide-in">
+                    <div class="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">02/</div>
                     <h2 class="text-4xl font-bold">About Us</h2>
-                    <p class="text-gray-300 leading-relaxed">
+                    <p class="text-gray-300 leading-relaxed text-lg">
                         Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
                         Lorem Ipsum has been the industry's standard dummy text ever since the 
                         1500s, when an unknown printer took a galley of type and scrambled it to 
@@ -98,19 +278,19 @@
                 </div>
                 
                 <!-- Right Content - Gallery -->
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4 slide-in">
                     <div class="space-y-4">
                         <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                              alt="Salon interior" 
-                             class="rounded-2xl w-full h-48 object-cover">
+                             class="rounded-2xl w-full h-48 object-cover hover:scale-105 transition-all duration-300 hover:shadow-xl">
                         <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                              alt="Beauty treatment" 
-                             class="rounded-2xl w-full h-32 object-cover">
+                             class="rounded-2xl w-full h-32 object-cover hover:scale-105 transition-all duration-300 hover:shadow-xl">
                     </div>
                     <div class="pt-8">
                         <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                              alt="Salon equipment" 
-                             class="rounded-2xl w-full h-64 object-cover">
+                             class="rounded-2xl w-full h-64 object-cover hover:scale-105 transition-all duration-300 hover:shadow-xl">
                     </div>
                 </div>
             </div>
@@ -118,39 +298,34 @@
     </section>
 
     <!-- Services Preview -->
-    <section class="py-20 bg-gradient-to-br from-rose-50 to-pink-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
+    <section class="py-20 bg-gradient-to-br from-rose-50 via-pink-50 to-purple-100 relative overflow-hidden">
+        <div class="absolute inset-0 bg-white/20"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 slide-in">
                 <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Services</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Experience the finest beauty treatments with our professional team</p>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Experience the finest beauty treatments with our professional team</p>
             </div>
             
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-                    <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
+                <div class="service-card bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl border border-white/50">
+                    <div class="service-icon w-16 h-16 bg-gradient-to-br from-rose-100 to-pink-200 rounded-full flex items-center justify-center mb-6">
+                        <span class="text-2xl">💇‍♀️</span>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-3">Hair Styling</h3>
                     <p class="text-gray-600">Professional hair cutting, coloring, and styling services</p>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-                    <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                        </svg>
+                <div class="service-card bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl border border-white/50">
+                    <div class="service-icon w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-200 rounded-full flex items-center justify-center mb-6">
+                        <span class="text-2xl">🧴</span>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-3">Facial Treatment</h3>
                     <p class="text-gray-600">Rejuvenating facial treatments for glowing skin</p>
                 </div>
                 
-                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-                    <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                        </svg>
+                <div class="service-card bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl border border-white/50">
+                    <div class="service-icon w-16 h-16 bg-gradient-to-br from-pink-100 to-rose-200 rounded-full flex items-center justify-center mb-6">
+                        <span class="text-2xl">💅</span>
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-3">Nail Care</h3>
                     <p class="text-gray-600">Manicure and pedicure services for beautiful nails</p>
@@ -160,15 +335,18 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer class="bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white py-12 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center">
-                <h3 class="text-2xl font-bold mb-4">Salonin</h3>
-                <p class="text-gray-400 mb-6">Your beauty is our passion</p>
-                <div class="flex justify-center space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a>
+                <h3 class="text-2xl font-bold mb-4 bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
+                    Salonin
+                </h3>
+                <p class="text-gray-300 mb-6 text-lg">Your beauty is our passion</p>
+                <div class="flex justify-center space-x-8">
+                    <a href="#" class="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105 hover:text-rose-400">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105 hover:text-pink-400">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105 hover:text-purple-400">Contact</a>
                 </div>
             </div>
         </div>
