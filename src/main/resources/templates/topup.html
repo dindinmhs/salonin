@@ -198,6 +198,35 @@
             });
           });
       };
+      function updateNotificationCount() {
+            fetch('/notifications/api/count')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('notification-badge');
+                    if (data.count > 0) {
+                        if (badge) {
+                            badge.textContent = data.count;
+                            badge.style.display = 'flex';
+                        } else {
+                            const notificationIcon = document.querySelector('a[href="/notifications"]');
+                            const newBadge = document.createElement('span');
+                            newBadge.id = 'notification-badge';
+                            newBadge.className = 'absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center';
+                            newBadge.textContent = data.count;
+                            notificationIcon.appendChild(newBadge);
+                        }
+                    } else if (badge) {
+                        badge.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error fetching notification count:', error));
+        }
+    
+        // Polling setiap 10 detik
+        setInterval(updateNotificationCount, 10000);
+        
+        // Panggil sekali saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', updateNotificationCount);
     </script>
   </body>
 </html>
