@@ -154,6 +154,14 @@ public class TopUpController {
         long unreadNotificationsCount = notificationsService.countUnreadNotifications(user);
         model.addAttribute("unreadNotificationsCount", unreadNotificationsCount);
         
+        int totalSuccessful = histories.stream()
+            .filter(h -> h.getStatus() == TopupHistory.Status.SUKSES)
+            .mapToInt(TopupHistory::getAmount)
+            .sum();
+        model.addAttribute("totalSuccessful", totalSuccessful);
+
         return "topup-history";
     }
+
+    
 }

@@ -20,25 +20,27 @@
                     <a href="/dashboard" class="text-2xl font-bold text-gray-800">Salonin</a>
                 </div>
                 
-                <!-- Notifications -->
-                <div class="relative mr-4">
-                    <a href="/notifications" class="text-gray-600 hover:text-gray-900">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <span th:if="${unreadNotificationsCount > 0}" id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" th:text="${unreadNotificationsCount}">0</span>
-                    </a>
-                </div>
-                
-                <!-- User Info & Logout -->
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-700">Welcome, <span th:text="${user.name}" class="font-medium"></span></span>
-                    <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium" th:text="${userRole}"></span>
-                    <form th:action="@{/logout}" method="post" class="inline">
-                        <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">
-                            Logout
-                        </button>
-                    </form>
+                <div class="flex items-center ">
+                  <!-- Notifications -->
+                  <div class="relative mr-4">
+                      <a href="/notifications" class="text-gray-600 hover:text-gray-900">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                          </svg>
+                          <span th:if="${unreadNotificationsCount > 0}" id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" th:text="${unreadNotificationsCount}">0</span>
+                      </a>
+                  </div>
+                  
+                  <!-- User Info & Logout -->
+                  <div class="flex items-center space-x-4">
+                      <span class="text-gray-700">Welcome, <span th:text="${user.name}" class="font-medium"></span></span>
+                      <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium" th:text="${userRole}"></span>
+                      <form th:action="@{/logout}" method="post" class="inline">
+                          <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">
+                              Logout
+                          </button>
+                      </form>
+                  </div>
                 </div>
             </div>
         </div>
@@ -56,8 +58,11 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div class="p-4 bg-rose-50 border-b border-rose-100">
-                <p class="text-rose-700 font-medium">Total transaksi: <span th:text="${histories.size()}">0</span></p>
+            <div class="p-4 bg-gray-50">
+                <div class="flex justify-between items-center">
+                    <p class="text-gray-500 font-medium">Total transaksi: <span th:text="${histories.size()}">0</span></p>
+                  
+                </div>
             </div>
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -74,48 +79,25 @@
                     </tr>
                     <tr th:each="history : ${histories}" class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${history?.createdAt != null ? #temporals.format(history.createdAt, 'dd MMM yyyy HH:mm') : '-'}"></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${history?.transactionId ?: '-'}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${history?.midtransId ?: '-'}"></td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${history?.amount != null ? 'Rp ' + #numbers.formatDecimal(history.amount, 0, 'COMMA', 0, 'POINT') : '-'}"></td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span th:if="${history?.status == 'SUCCESS'}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Berhasil</span>
-                            <span th:if="${history?.status == 'PENDING'}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span>
-                            <span th:if="${history?.status == 'FAILED'}" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Gagal</span>
+                            <span
+                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                            th:text="${history.status}"
+                          >
+                          </span>
                         </td>
+                    </tr>
+                    <tr th:if="${not histories.empty}">
+                      <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" colspan="2" 
+                          th:text="'Rp ' + ${#numbers.formatDecimal(totalSuccessful, 0, 'COMMA', 0, 'POINT')}">
+                      </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <script>
-      function updateNotificationCount() {
-            fetch('/notifications/api/count')
-                .then(response => response.json())
-                .then(data => {
-                    const badge = document.getElementById('notification-badge');
-                    if (data.count > 0) {
-                        if (badge) {
-                            badge.textContent = data.count;
-                            badge.style.display = 'flex';
-                        } else {
-                            const notificationIcon = document.querySelector('a[href="/notifications"]');
-                            const newBadge = document.createElement('span');
-                            newBadge.id = 'notification-badge';
-                            newBadge.className = 'absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center';
-                            newBadge.textContent = data.count;
-                            notificationIcon.appendChild(newBadge);
-                        }
-                    } else if (badge) {
-                        badge.style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error fetching notification count:', error));
-        }
-    
-        // Polling setiap 10 detik
-        setInterval(updateNotificationCount, 10000);
-        
-        // Panggil sekali saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', updateNotificationCount);
-    </script>
   </body>
 </html>
