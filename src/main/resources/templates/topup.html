@@ -20,65 +20,35 @@
   <body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <!-- Logo -->
-          <div class="flex items-center">
-            <a href="/dashboard" class="text-2xl font-bold text-gray-800"
-              >Salonin</a
-            >
-          </div>
-
-          <div class="flex items-center">
-
-            <!-- Notifications -->
-            <div class="relative mr-4">
-              <a href="/notifications" class="text-gray-600 hover:text-gray-900">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-                <span
-                  th:if="${unreadNotificationsCount > 0}"
-                  id="notification-badge"
-                  class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
-                  th:text="${unreadNotificationsCount}"
-                  >0</span
-                >
-              </a>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="/dashboard" class="text-2xl font-bold text-gray-800">Salonin</a>
+                </div>
+                
+                <!-- Notifications -->
+                <div class="relative mr-4">
+                    <a href="/notifications" class="text-gray-600 hover:text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span th:if="${unreadNotificationsCount > 0}" id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" th:text="${unreadNotificationsCount}">0</span>
+                    </a>
+                </div>
+                
+                <!-- User Info & Logout -->
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span th:text="${user.name}" class="font-medium"></span></span>
+                    <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium" th:text="${userRole}"></span>
+                    <form th:action="@{/logout}" method="post" class="inline">
+                        <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
-  
-            <!-- User Info & Logout -->
-            <div class="flex items-center space-x-4">
-              <span class="text-gray-700"
-                >Welcome, <span th:text="${user.name}" class="font-medium"></span
-              ></span>
-              <span
-                class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium"
-                th:text="${userRole}"
-              ></span>
-              <form th:action="@{/logout}" method="post" class="inline">
-                <button
-                  type="submit"
-                  class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors"
-                >
-                  Logout
-                </button>
-              </form>
-            </div>
-          </div>
         </div>
-      </div>
     </nav>
 
     <div class="max-w-md mx-auto px-4 py-8">
@@ -89,18 +59,9 @@
             href="/topup/history"
             class="text-sm font-medium text-rose-600 hover:text-rose-700 flex items-center"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-              <path
-                fill-rule="evenodd"
-                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                clip-rule="evenodd"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
             </svg>
             Lihat Riwayat
           </a>
@@ -111,35 +72,25 @@
             >Jumlah Top Up</label
           >
           <div class="relative rounded-md shadow-sm">
-            <div
-              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-            >
-              <span class="text-gray-500 sm:text-sm">Rp</span>
-            </div>
-            <input
-              type="number"
-              id="amount"
-              class="w-full pl-12 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
-              placeholder="Masukkan jumlah"
-            />
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="text-gray-500 sm:text-sm">Rp</span>
+              </div>
+              <input
+                  type="number"
+                  id="amount"
+                  class="w-full pl-12 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
+                  placeholder="Masukkan jumlah"
+              />
           </div>
+          <p class="mt-2 text-sm text-gray-500">Minimum top up Rp 10.000</p>
         </div>
 
         <button
           id="pay-button"
           class="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white py-3 px-4 rounded-lg hover:from-rose-600 hover:to-pink-700 focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 transition-all duration-200 font-medium flex items-center justify-center"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 mr-2"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
-              clip-rule="evenodd"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
           </svg>
           Top Up Sekarang
         </button>
@@ -201,35 +152,6 @@
             });
           });
       };
-      function updateNotificationCount() {
-            fetch('/notifications/api/count')
-                .then(response => response.json())
-                .then(data => {
-                    const badge = document.getElementById('notification-badge');
-                    if (data.count > 0) {
-                        if (badge) {
-                            badge.textContent = data.count;
-                            badge.style.display = 'flex';
-                        } else {
-                            const notificationIcon = document.querySelector('a[href="/notifications"]');
-                            const newBadge = document.createElement('span');
-                            newBadge.id = 'notification-badge';
-                            newBadge.className = 'absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center';
-                            newBadge.textContent = data.count;
-                            notificationIcon.appendChild(newBadge);
-                        }
-                    } else if (badge) {
-                        badge.style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error fetching notification count:', error));
-        }
-    
-        // Polling setiap 10 detik
-        setInterval(updateNotificationCount, 10000);
-        
-        // Panggil sekali saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', updateNotificationCount);
     </script>
   </body>
 </html>
