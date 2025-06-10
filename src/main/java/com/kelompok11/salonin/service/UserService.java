@@ -94,4 +94,5 @@ public class UserService {
     public List<User> getUsersByBranch(Long branchId) {
         return userRepository.findByBranchId(branchId);
     }
+    
 }

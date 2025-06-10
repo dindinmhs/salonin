@@ -35,10 +35,19 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/login?error=true") // Tambahkan ini untuk debug
                 .permitAll())
             .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true) // Pastikan session di-invalidate
+                .deleteCookies("JSESSIONID") // Hapus session cookie
+                .clearAuthentication(true) // Clear authentication
                 .permitAll())
+            .sessionManagement(session -> session
+                .maximumSessions(1) // Batasi satu session per user
+                .maxSessionsPreventsLogin(false) // Allow new login to kick out old session
+            )
             .userDetailsService(userDetailsService);
         
         return http.build();

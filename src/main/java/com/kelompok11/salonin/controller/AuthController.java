@@ -66,11 +66,9 @@ public class AuthController {
         }
     }
     
-    @GetMapping("/login")
-    public String showLoginForm() {
-        return "login";
-    }
     
+
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -120,5 +118,15 @@ public class AuthController {
         }
         
         return "dashboard";
+    }
+    
+    @GetMapping("/login")
+    public String showLoginForm(Model model, 
+                               @org.springframework.web.bind.annotation.RequestParam(value = "error", required = false) String error,
+                               @org.springframework.web.bind.annotation.RequestParam(value = "logout", required = false) String logout) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "Invalid email or password.");
+        }
+        return "login";
     }
 }
