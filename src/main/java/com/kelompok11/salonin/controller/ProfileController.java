@@ -45,33 +45,41 @@ public class ProfileController {
         String email = auth.getName();
         User user = userService.findByEmail(email);
         
-        // Get booking history
-        List<Booking> bookingHistory = bookingService.getBookingsByCustomer(user);
+        // Add user role to model
+        model.addAttribute("userRole", user.getRole().name());
         
-        // Get transaction history
-        List<TopupHistory> transactionHistory = topUpService.getTopupHistoryByUser(user);
-        
-        // Calculate statistics
-        long completedBookings = bookingHistory.stream()
-            .filter(b -> b.getStatus() == Booking.Status.SELESAI)
-            .count();
+        // Only load booking and transaction data for CUSTOMER
+        if (user.getRole() == User.Role.CUSTOMER) {
+            // Get booking history
+            List<Booking> bookingHistory = bookingService.getBookingsByCustomer(user);
             
-        int totalSpent = bookingHistory.stream()
-            .filter(b -> b.getStatus() == Booking.Status.SELESAI)
-            .mapToInt(b -> b.getService().getPrice())
-            .sum();
+            // Get transaction history
+            List<TopupHistory> transactionHistory = topUpService.getTopupHistoryByUser(user);
             
-        int totalTopup = transactionHistory.stream()
-            .filter(h -> h.getStatus() == TopupHistory.Status.SUKSES)
-            .mapToInt(TopupHistory::getAmount)
-            .sum();
+            // Calculate statistics
+            long completedBookings = bookingHistory.stream()
+                .filter(b -> b.getStatus() == Booking.Status.SELESAI)
+                .count();
+                
+            int totalSpent = bookingHistory.stream()
+                .filter(b -> b.getStatus() == Booking.Status.SELESAI)
+                .mapToInt(b -> b.getService().getPrice())
+                .sum();
+                
+            int totalTopup = transactionHistory.stream()
+                .filter(h -> h.getStatus() == TopupHistory.Status.SUKSES)
+                .mapToInt(TopupHistory::getAmount)
+                .sum();
+            
+            // ADD THESE MISSING LINES:
+            model.addAttribute("bookingHistory", bookingHistory);
+            model.addAttribute("transactionHistory", transactionHistory);
+            model.addAttribute("completedBookings", completedBookings);
+            model.addAttribute("totalSpent", totalSpent);
+            model.addAttribute("totalTopup", totalTopup);
+        }
         
         model.addAttribute("user", user);
-        model.addAttribute("bookingHistory", bookingHistory);
-        model.addAttribute("transactionHistory", transactionHistory);
-        model.addAttribute("completedBookings", completedBookings);
-        model.addAttribute("totalSpent", totalSpent);
-        model.addAttribute("totalTopup", totalTopup);
         
         return "profile/index";
     }
