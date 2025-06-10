@@ -34,8 +34,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)
-                .failureUrl("/login?error=true") // Tambahkan ini untuk debug
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
                 .permitAll())
             .logout(logout -> logout
                 .logoutUrl("/logout")

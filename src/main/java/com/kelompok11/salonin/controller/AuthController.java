@@ -42,7 +42,26 @@ public class AuthController {
     }
     
     @GetMapping("/")
-    public String landingPage() {
+    public String landingPage(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            // User sudah login, tambahkan data user ke model
+            String username = authentication.getName();
+            User user = userService.findByEmail(username);
+            if (user != null) {
+                model.addAttribute("user", user);
+                model.addAttribute("isAuthenticated", true);
+                
+                // Tambahkan role user
+                String role = user.getRole().name();
+                model.addAttribute("userRole", role);
+                
+                // Tambahkan notifikasi count
+                long unreadCount = notificationsService.countUnreadNotifications(user);
+                model.addAttribute("unreadNotificationsCount", unreadCount);
+            }
+        } else {
+            model.addAttribute("isAuthenticated", false);
+        }
         return "index";
     }
     
