@@ -10,12 +10,16 @@ import com.kelompok11.salonin.service.ServiceService;
 import com.kelompok11.salonin.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -37,8 +41,10 @@ public class BookingController {
     private NotificationsService notificationsService;
     
     @PostMapping("/create")
-    public String createBooking(@ModelAttribute("bookingRequest") Booking request,
-                               RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> createBooking(@ModelAttribute("bookingRequest") Booking request) {
+        Map<String, Object> response = new HashMap<>();
+        
         try {
             // Get current authenticated user
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -49,8 +55,14 @@ public class BookingController {
             Service service = serviceService.getServiceById(request.getService().getId())
                 .orElseThrow(() -> new RuntimeException("Service not found"));
             
-            // Get employee (you may need to implement this based on your business logic)
-            User employee = request.getEmployee(); // or get from serviceService/userService
+            // Get available employee from the same branch as the service
+            List<User> employees = userService.getEmployeesByBranch(service.getBranch().getId());
+            if (employees.isEmpty()) {
+                throw new RuntimeException("No employee available for this branch");
+            }
+            
+            // Select the first available employee (you can implement more sophisticated logic here)
+            User employee = employees.get(0);
             
             Booking booking = bookingService.createBooking(user, employee, 
                 service, request.getDate(), request.getTime());
@@ -64,11 +76,21 @@ public class BookingController {
             
             notificationsService.createNotification(employee, title, message);
             
-            redirectAttributes.addFlashAttribute("successMessage", "Booking created successfully");
+            response.put("success", true);
+            response.put("message", "Booking berhasil");
+            return ResponseEntity.ok(response);
+            
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            response.put("success", false);
+            if (e.getMessage().contains("Insufficient balance")) {
+                response.put("message", "Maaf saldo tidak mencukupi");
+                response.put("showTopUp", true);
+            } else {
+                response.put("message", e.getMessage());
+                response.put("showTopUp", false);
+            }
+            return ResponseEntity.badRequest().body(response);
         }
-        return "redirect:/dashboard";
     }
     
     @PostMapping("/{id}/status")
