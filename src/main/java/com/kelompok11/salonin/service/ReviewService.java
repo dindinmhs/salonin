@@ -36,6 +36,10 @@ public class ReviewService {
         return reviewRepository.findByBookingId(bookingId);
     }
     
+    public List<Review> getReviewsByBranch(Long branchId) {
+        return reviewRepository.findByBranchIdOrderByCreatedAtDesc(branchId);
+    }
+    
     public Optional<Review> findByBookingId(Long bookingId) {
         return reviewRepository.findByBookingId(bookingId).stream().findFirst();
     }

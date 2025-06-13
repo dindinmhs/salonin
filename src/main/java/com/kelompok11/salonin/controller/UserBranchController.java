@@ -1,6 +1,7 @@
 package com.kelompok11.salonin.controller;
 
 import com.kelompok11.salonin.model.Branch;
+import com.kelompok11.salonin.model.Review;
 import com.kelompok11.salonin.model.Service;
 import com.kelompok11.salonin.model.User;
 import com.kelompok11.salonin.service.BranchService;
@@ -117,11 +118,15 @@ public class UserBranchController {
         Double averageRating = reviewService.getBranchAverageRating(id);
         Long reviewCount = reviewService.getBranchReviewCount(id);
         
+        // Tambahkan review data
+        List<Review> reviews = reviewService.getReviewsByBranch(id);
+        
         model.addAttribute("branch", branch);
         model.addAttribute("services", services);
         model.addAttribute("employees", employees);
         model.addAttribute("averageRating", averageRating);
         model.addAttribute("reviewCount", reviewCount);
+        model.addAttribute("reviews", reviews);
         
         return "branches/detail";
     }
