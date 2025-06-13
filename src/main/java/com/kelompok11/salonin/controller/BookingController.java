@@ -45,17 +45,24 @@ public class BookingController {
             String email = auth.getName();
             User user = userService.findByEmail(email);
             
-            Booking booking = bookingService.createBooking(user, request.getEmployee(), 
-                request.getService(), request.getDate(), request.getTime());
+            // Get complete Service object from database
+            Service service = serviceService.getServiceById(request.getService().getId())
+                .orElseThrow(() -> new RuntimeException("Service not found"));
+            
+            // Get employee (you may need to implement this based on your business logic)
+            User employee = request.getEmployee(); // or get from serviceService/userService
+            
+            Booking booking = bookingService.createBooking(user, employee, 
+                service, request.getDate(), request.getTime());
             
             // Kirim notifikasi ke employee yang dipilih
             String title = "Booking Baru";
             String message = "Anda memiliki booking baru dari " + user.getName() + 
-                            " untuk layanan " + request.getService().getName() + 
+                            " untuk layanan " + service.getName() + 
                             " pada tanggal " + request.getDate() + 
                             " pukul " + request.getTime();
             
-            notificationsService.createNotification(request.getEmployee(), title, message);
+            notificationsService.createNotification(employee, title, message);
             
             redirectAttributes.addFlashAttribute("successMessage", "Booking created successfully");
         } catch (RuntimeException e) {
