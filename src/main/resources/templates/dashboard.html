@@ -216,7 +216,7 @@
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Book Appointment</h3>
                     <p class="text-gray-600 text-sm mb-4">Schedule your next beauty treatment</p>
-                    <a href="/bookings/new" class="block w-full bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-lg transition-colors text-center">
+                    <a href="/branches" class="block w-full bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-lg transition-colors text-center">
                         Book Now
                     </a>
                 </div>
@@ -269,9 +269,7 @@
         <div th:if="${userRole == 'CUSTOMER'}" class="bg-white rounded-2xl shadow-lg p-8 mb-8">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">Your Bookings</h2>
-                <a href="/bookings/new" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                    New Booking
-                </a>
+                
             </div>
             
             <div th:if="${#lists.isEmpty(bookings)}" class="text-gray-500 text-center py-8">
