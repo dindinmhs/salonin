@@ -1,526 +1,1015 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - Salonin Beauty Salon</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Inter', sans-serif; }
+      body {
+        font-family: "Inter", sans-serif;
+      }
     </style>
-</head>
-<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen" th:with="BookingStatus=${T(com.kelompok11.salonin.model.Booking.Status)}">
+  </head>
+  <body
+    class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen"
+    th:with="BookingStatus=${T(com.kelompok11.salonin.model.Booking.Status)}"
+  >
     <!-- Navigation -->
     <!-- Dalam bagian navigation, sebelum User Info & Logout -->
     <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/">
-                        <h1 class="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">Salonin</h1>
-                    </a>
-                </div>
-                
-                <div class="flex items-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex items-center">
+            <a href="/">
+              <h1
+                class="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent"
+              >
+                Salonin
+              </h1>
+            </a>
+          </div>
 
-                    <!-- Notifications -->
-                    <div class="relative mr-4">
-                        <a href="/notifications" class="text-gray-600 hover:text-gray-900">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <span th:if="${unreadNotificationsCount > 0}" id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" th:text="${unreadNotificationsCount}">0</span>
-                        </a>
-                    </div>
-                    
-                    
-                
-                    <!-- User Info & Logout -->
-                    <!-- User Info & Profile Dropdown -->
-                    <div class="flex items-center space-x-4">
-                        <span class="text-gray-700"><span th:text="${user.name}" class="font-medium"></span></span>
-                        <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium" th:text="${userRole}"></span>
-                        
-                        <!-- Profile Dropdown -->
-                        <div class="relative">
-                            <button id="profileDropdownButton" class="flex items-center focus:outline-none">
-                                <div class="w-10 h-10 rounded-full border-3 border-rose-300 hover:border-rose-400 transition-all duration-200 overflow-hidden shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <img th:if="${user.imgUrl != null and user.imgUrl != ''}" 
-                                        
-                                         th:src="@{${user.imgUrl}}"
-                                         
-                    
-                                         alt="Profile Picture" 
-                                         class="w-full h-full object-cover">
-                                    <div th:unless="${user.imgUrl != null and user.imgUrl != ''}" 
-                                         class="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center">
-                                        <span class="text-white font-semibold text-lg" th:text="${#strings.substring(user.name, 0, 1)}"></span>
-                                    </div>
-                                </div>
-                            </button>
-                            
-                            <!-- Dropdown Menu -->
-                            <div id="profileDropdownMenu" class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible transform scale-95 transition-all duration-200 ease-out z-50">
-                                <div class="py-2">
-                                    <!-- Profile Header -->
-                                    <div class="px-4 py-3 border-b border-gray-100">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-8 h-8 rounded-full border-2 border-rose-300 overflow-hidden">
-                                                <img th:if="${user.imgUrl != null and user.imgUrl != ''}" 
-                                                     th:src="@{${user.imgUrl}}"
-                                                     alt="Profile Picture" 
-                                                     class="w-full h-full object-cover">
-                                                <div th:unless="${user.imgUrl != null and user.imgUrl != ''}" 
-                                                     class="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center">
-                                                    <span class="text-white font-medium text-sm" th:text="${#strings.substring(user.name, 0, 1)}"></span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-semibold text-gray-900" th:text="${user.name}"></p>
-                                                <p class="text-xs text-gray-500" th:text="${user.email}"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Menu Items -->
-                                    <div class="py-1">
-                                        <a href="/profile" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-rose-50 hover:text-rose-600 transition-colors duration-150">
-                                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                            </svg>
-                                            View Profile
-                                        </a>
-                                        
-                                        <div class="border-t border-gray-100 my-1"></div>
-                                        
-                                        <form th:action="@{/logout}" method="post" class="block">
-                                            <button type="submit" class="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 text-left">
-                                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                                </svg>
-                                                Logout
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div class="flex items-center">
+            <!-- Notifications -->
+            <div class="relative mr-4">
+              <a
+                href="/notifications"
+                class="text-gray-600 hover:text-gray-900"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+                <span
+                  th:if="${unreadNotificationsCount > 0}"
+                  id="notification-badge"
+                  class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                  th:text="${unreadNotificationsCount}"
+                  >0</span
+                >
+              </a>
             </div>
+
+            <!-- User Info & Logout -->
+            <!-- User Info & Profile Dropdown -->
+            <div class="flex items-center space-x-4">
+              <span class="text-gray-700"
+                ><span th:text="${user.name}" class="font-medium"></span
+              ></span>
+              <span
+                class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium"
+                th:text="${userRole}"
+              ></span>
+
+              <!-- Profile Dropdown -->
+              <div class="relative">
+                <button
+                  id="profileDropdownButton"
+                  class="flex items-center focus:outline-none"
+                >
+                  <div
+                    class="w-10 h-10 rounded-full border-3 border-rose-300 hover:border-rose-400 transition-all duration-200 overflow-hidden shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    <img
+                      th:if="${user.imgUrl != null and user.imgUrl != ''}"
+                      th:src="@{${user.imgUrl}}"
+                      alt="Profile Picture"
+                      class="w-full h-full object-cover"
+                    />
+                    <div
+                      th:unless="${user.imgUrl != null and user.imgUrl != ''}"
+                      class="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center"
+                    >
+                      <span
+                        class="text-white font-semibold text-lg"
+                        th:text="${#strings.substring(user.name, 0, 1)}"
+                      ></span>
+                    </div>
+                  </div>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div
+                  id="profileDropdownMenu"
+                  class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible transform scale-95 transition-all duration-200 ease-out z-50"
+                >
+                  <div class="py-2">
+                    <!-- Profile Header -->
+                    <div class="px-4 py-3 border-b border-gray-100">
+                      <div class="flex items-center space-x-3">
+                        <div
+                          class="w-8 h-8 rounded-full border-2 border-rose-300 overflow-hidden"
+                        >
+                          <img
+                            th:if="${user.imgUrl != null and user.imgUrl != ''}"
+                            th:src="@{${user.imgUrl}}"
+                            alt="Profile Picture"
+                            class="w-full h-full object-cover"
+                          />
+                          <div
+                            th:unless="${user.imgUrl != null and user.imgUrl != ''}"
+                            class="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center"
+                          >
+                            <span
+                              class="text-white font-medium text-sm"
+                              th:text="${#strings.substring(user.name, 0, 1)}"
+                            ></span>
+                          </div>
+                        </div>
+                        <div>
+                          <p
+                            class="text-sm font-semibold text-gray-900"
+                            th:text="${user.name}"
+                          ></p>
+                          <p
+                            class="text-xs text-gray-500"
+                            th:text="${user.email}"
+                          ></p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Menu Items -->
+                    <div class="py-1">
+                      <a
+                        href="/profile"
+                        class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-rose-50 hover:text-rose-600 transition-colors duration-150"
+                      >
+                        <svg
+                          class="w-4 h-4 mr-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          ></path>
+                        </svg>
+                        View Profile
+                      </a>
+
+                      <div class="border-t border-gray-100 my-1"></div>
+
+                      <form th:action="@{/logout}" method="post" class="block">
+                        <button
+                          type="submit"
+                          class="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 text-left"
+                        >
+                          <svg
+                            class="w-4 h-4 mr-3"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            ></path>
+                          </svg>
+                          Logout
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </nav>
 
     <!-- Flash Messages -->
-    <div th:if="${successMessage}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <span th:text="${successMessage}"></span>
-        </div>
+    <div
+      th:if="${successMessage}"
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4"
+    >
+      <div
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+      >
+        <span th:text="${successMessage}"></span>
+      </div>
     </div>
-    <div th:if="${errorMessage}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <span th:text="${errorMessage}"></span>
-        </div>
+    <div
+      th:if="${errorMessage}"
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4"
+    >
+      <div
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+      >
+        <span th:text="${errorMessage}"></span>
+      </div>
     </div>
 
     <!-- Dashboard Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Welcome Section -->
-        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-4">
-                Welcome to your Dashboard, <span th:text="${user.name}"></span>
-            </h1>
-            <p class="text-gray-600 mb-6">Manage your beauty appointments and services from here.</p>
-            
-            <!-- Role-specific welcome message -->
-            <div th:if="${userRole == 'ADMIN'}" class="bg-purple-100 border border-purple-400 text-purple-700 px-4 py-3 rounded">
-                <strong>Admin Access:</strong> You have full access to manage users, appointments, and salon operations.
+      <!-- Welcome Section -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">
+          Welcome to your Dashboard, <span th:text="${user.name}"></span>
+        </h1>
+        <p class="text-gray-600 mb-6">
+          Manage your beauty appointments and services from here.
+        </p>
+
+        <!-- Role-specific welcome message -->
+        <div
+          th:if="${userRole == 'ADMIN'}"
+          class="bg-purple-100 border border-purple-400 text-purple-700 px-4 py-3 rounded"
+        >
+          <strong>Admin Access:</strong> You have full access to manage users,
+          appointments, and salon operations.
+        </div>
+        <div
+          th:if="${userRole == 'EMPLOYEE'}"
+          class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded"
+        >
+          <strong>Employee Access:</strong> You can manage appointments and
+          provide services to customers.
+        </div>
+        <!-- Add this after the welcome message for customers -->
+        <div
+          th:if="${userRole == 'CUSTOMER'}"
+          class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+        >
+          <div class="flex justify-between items-center">
+            <span>
+              <strong>Your Balance:</strong>
+              <span
+                th:text="'Rp ' + ${#numbers.formatDecimal(user.balance, 0, 'COMMA', 0, 'POINT')}"
+                >Rp 0</span
+              >
+            </span>
+            <a
+              href="/topup"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+            >
+              Top Up
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Grid -->
+      <!-- Di bagian admin section, tambahkan: -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Admin Actions -->
+        <div th:if="${userRole == 'ADMIN'}">
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+          >
+            <div
+              class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-purple-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                />
+              </svg>
             </div>
-            <div th:if="${userRole == 'EMPLOYEE'}" class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded">
-                <strong>Employee Access:</strong> You can manage appointments and provide services to customers.
-            </div>
-            <!-- Add this after the welcome message for customers -->
-            <div th:if="${userRole == 'CUSTOMER'}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                <div class="flex justify-between items-center">
-                    <span>
-                        <strong>Your Balance:</strong>
-                        <span th:text="'Rp ' + ${#numbers.formatDecimal(user.balance, 0, 'COMMA', 0, 'POINT')}">Rp 0</span>
-                    </span>
-                    <a href="/topup" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                        Top Up
-                    </a>
-                </div>
-            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+              Manage Users
+            </h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Add, edit, or remove users from the system
+            </p>
+            <a
+              href="/admin/users"
+              class="block w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-colors text-center"
+            >
+              Manage Users
+            </a>
+          </div>
         </div>
 
-        <!-- Quick Actions Grid -->
-        <!-- Di bagian admin section, tambahkan: -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <!-- Admin Actions -->
-            <div th:if="${userRole == 'ADMIN'}">
-                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Manage Users</h3>
-                    <p class="text-gray-600 text-sm mb-4">Add, edit, or remove users from the system</p>
-                    <a href="/admin/users" class="block w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-colors text-center">
-                        Manage Users
-                    </a>
-                </div>
+        <!-- Branch Management (Admin Only) -->
+        <div th:if="${userRole == 'ADMIN'}">
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+          >
+            <div
+              class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-indigo-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
             </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+              Manage Branches
+            </h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Add, edit, or remove salon branches
+            </p>
+            <a
+              href="/admin/branches"
+              class="block w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg transition-colors text-center"
+            >
+              Manage Branches
+            </a>
+          </div>
+        </div>
 
-            <!-- Branch Management (Admin Only) -->
-            <div th:if="${userRole == 'ADMIN'}">
-                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Manage Branches</h3>
-                    <p class="text-gray-600 text-sm mb-4">Add, edit, or remove salon branches</p>
-                    <a href="/admin/branches" class="block w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg transition-colors text-center">
-                        Manage Branches
-                    </a>
-                </div>
+        <!-- Employee Actions -->
+        <div th:if="${userRole == 'EMPLOYEE'}">
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+          >
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3a4 4 0 118 0v4m-4 12v-6m0 0V7m0 6h6m-6 0H6"
+                />
+              </svg>
             </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+              Manage Appointments
+            </h3>
+            <p class="text-gray-600 text-sm mb-4">
+              View and manage customer appointments
+            </p>
+            <button
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors"
+            >
+              View Appointments
+            </button>
+          </div>
+        </div>
 
-            <!-- Employee Actions -->
-            <div th:if="${userRole == 'EMPLOYEE'}">
-                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a4 4 0 118 0v4m-4 12v-6m0 0V7m0 6h6m-6 0H6"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Manage Appointments</h3>
-                    <p class="text-gray-600 text-sm mb-4">View and manage customer appointments</p>
-                    <button class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors">
-                        View Appointments
+        <!-- Customer Actions -->
+        <div th:if="${userRole == 'CUSTOMER'}">
+          <div
+            class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+          >
+            <div
+              class="w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center mb-4"
+            >
+              <svg
+                class="w-6 h-6 text-rose-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+              Book Appointment
+            </h3>
+            <p class="text-gray-600 text-sm mb-4">
+              Schedule your next beauty treatment
+            </p>
+            <a
+              href="/branches"
+              class="block w-full bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-lg transition-colors text-center"
+            >
+              Book Now
+            </a>
+          </div>
+        </div>
+
+        <!-- Common Actions for All Roles -->
+        <div
+          th:if="${userRole == 'CUSTOMER'}"
+          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+        >
+          <div
+            class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4"
+          >
+            <svg
+              class="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Top Up Saldo</h3>
+          <p class="text-gray-600 text-sm mb-4">Isi ulang saldo akun Anda</p>
+          <a
+            href="/topup"
+            class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors text-center"
+          >
+            Top Up
+          </a>
+        </div>
+
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+        >
+          <div
+            class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4"
+          >
+            <svg
+              class="w-6 h-6 text-yellow-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">View Reports</h3>
+          <p class="text-gray-600 text-sm mb-4">
+            Check your appointment history and statistics
+          </p>
+          <button
+            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg transition-colors"
+          >
+            View Reports
+          </button>
+        </div>
+        <!-- Service Management Card -->
+        <div
+          th:if="${userRole == 'ADMIN'}"
+          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <div class="bg-purple-100 p-3 rounded-lg">
+              <svg
+                class="w-6 h-6 text-purple-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                />
+              </svg>
+            </div>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            Service Management
+          </h3>
+          <p class="text-gray-600 text-sm mb-4">
+            Manage salon services and treatments
+          </p>
+          <a
+            href="/admin/services"
+            class="text-purple-600 hover:text-purple-700 font-medium text-sm"
+            >Manage Services →</a
+          >
+        </div>
+      </div>
+
+      <!-- Customer Bookings List Section -->
+      <div
+        th:if="${userRole == 'CUSTOMER'}"
+        class="bg-white rounded-2xl shadow-lg p-8 mb-8"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-900">Your Bookings</h2>
+        </div>
+
+        <div
+          th:if="${#lists.isEmpty(bookings)}"
+          class="text-gray-500 text-center py-8"
+        >
+          <p>You don't have any bookings yet.</p>
+          <a
+            href="/bookings/new"
+            class="text-rose-500 hover:text-rose-600 font-medium inline-block mt-2"
+            >Book your first appointment →</a
+          >
+        </div>
+
+        <div th:unless="${#lists.isEmpty(bookings)}" class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Branch
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Service
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Stylist
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Date & Time
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Price
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr th:each="booking : ${bookings}">
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                  th:text="${booking.branch.name}"
+                ></td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                  th:text="${booking.service.name}"
+                ></td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  th:text="${booking.employee.name}"
+                ></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <span
+                    th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"
+                  ></span>
+                  <span th:text="${booking.time}"></span>
+                </td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  th:text="${'Rp ' + #numbers.formatDecimal(booking.service.price, 0, 'COMMA', 0, 'POINT')}"
+                ></td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span
+                    th:switch="${booking.status}"
+                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    th:text="${booking.status}"
+                  >
+                    <span
+                      th:case="T(com.kelompok11.salonin.model.Booking.Status).PENDING"
+                      th:classappend="bg-yellow-100 text-yellow-800"
+                    ></span>
+                    <span
+                      th:case="T(com.kelompok11.salonin.model.Booking.Status).DITERIMA"
+                      th:classappend="bg-green-100 text-green-800"
+                    ></span>
+                    <span
+                      th:case="T(com.kelompok11.salonin.model.Booking.Status).BATAL"
+                      th:classappend="bg-red-100 text-red-800"
+                    ></span>
+                    <span th:case="*">bg-gray-100 text-gray-800</span>
+                  </span>
+                </td>
+
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div th:if="${hasSelesaiBooking}">
+                    <a
+                      th:if="${reviewExistMap[booking.id]}"
+                      th:href="@{'/reviews/view/' + ${booking.id}}"
+                      class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 transition"
+                    >
+                      Lihat Review
+                    </a>
+                    <a
+                      th:if="${!reviewExistMap[booking.id]}"
+                      th:href="@{'/reviews/create/' + ${booking.id}}"
+                      class="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition"
+                    >
+                      Buat Review
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin/Employee Bookings Management Section -->
+      <div
+        th:if="${userRole == 'ADMIN' or userRole == 'EMPLOYEE'}"
+        class="bg-white rounded-2xl shadow-lg p-8 mb-8"
+      >
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Manage Bookings</h2>
+
+        <div
+          th:if="${#lists.isEmpty(pendingBookings)}"
+          class="text-gray-500 text-center py-4 mb-6"
+        >
+          <p>No pending bookings to manage.</p>
+        </div>
+
+        <div
+          th:unless="${#lists.isEmpty(pendingBookings)}"
+          class="overflow-x-auto mb-8"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Pending Bookings
+          </h3>
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Customer
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Service
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Stylist
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Date & Time
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr th:each="booking : ${pendingBookings}">
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                  th:text="${booking.user.name}"
+                ></td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  th:text="${booking.service.name}"
+                ></td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  th:text="${booking.employee.name}"
+                ></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <span
+                    th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"
+                  ></span>
+                  <span th:text="${booking.time}"></span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <form
+                    th:action="@{/bookings/{id}/status(id=${booking.id})}"
+                    method="post"
+                    class="inline"
+                  >
+                    <input type="hidden" name="status" value="DITERIMA" />
+                    <button
+                      type="submit"
+                      class="text-green-600 hover:text-green-900 mr-3"
+                    >
+                      Accept
                     </button>
-                </div>
-            </div>
-
-            <!-- Customer Actions -->
-            <div th:if="${userRole == 'CUSTOMER'}">
-                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                    <div class="w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Book Appointment</h3>
-                    <p class="text-gray-600 text-sm mb-4">Schedule your next beauty treatment</p>
-                    <a href="/branches" class="block w-full bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-lg transition-colors text-center">
-                        Book Now
-                    </a>
-                </div>
-            </div>
-
-            <!-- Common Actions for All Roles -->
-            <div th:if="${userRole == 'CUSTOMER'}" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Top Up Saldo</h3>
-                <p class="text-gray-600 text-sm mb-4">Isi ulang saldo akun Anda</p>
-                <a href="/topup" class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors text-center">
-                    Top Up
-                </a>
-            </div>
-
-           
-
-            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">View Reports</h3>
-                <p class="text-gray-600 text-sm mb-4">Check your appointment history and statistics</p>
-                <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg transition-colors">
-                    View Reports
-                </button>
-            </div>
-            <!-- Service Management Card -->
-            <div th:if="${userRole == 'ADMIN'}" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="bg-purple-100 p-3 rounded-lg">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-                        </svg>
-                    </div>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Service Management</h3>
-                <p class="text-gray-600 text-sm mb-4">Manage salon services and treatments</p>
-                <a href="/admin/services" class="text-purple-600 hover:text-purple-700 font-medium text-sm">Manage Services →</a>
-            </div>
+                  </form>
+                  <form
+                    th:action="@{/bookings/{id}/status(id=${booking.id})}"
+                    method="post"
+                    class="inline"
+                  >
+                    <input type="hidden" name="status" value="BATAL" />
+                    <button
+                      type="submit"
+                      class="text-red-600 hover:text-red-900"
+                    >
+                      Reject
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Customer Bookings List Section -->
-        <div th:if="${userRole == 'CUSTOMER'}" class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Your Bookings</h2>
-                
-            </div>
-            
-            <div th:if="${#lists.isEmpty(bookings)}" class="text-gray-500 text-center py-8">
-                <p>You don't have any bookings yet.</p>
-                <a href="/bookings/new" class="text-rose-500 hover:text-rose-600 font-medium inline-block mt-2">Book your first appointment →</a>
-            </div>
-            
-            <div th:unless="${#lists.isEmpty(bookings)}" class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Branch</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stylist</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr th:each="booking : ${bookings}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.branch.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.service.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.employee.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"></span>
-                                <span th:text="${booking.time}"></span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${'Rp ' + #numbers.formatDecimal(booking.service.price, 0, 'COMMA', 0, 'POINT')}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span th:switch="${booking.status}" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" th:text="${booking.status}">
-                                    <span th:case="T(com.kelompok11.salonin.model.Booking.Status).PENDING" th:classappend="bg-yellow-100 text-yellow-800"></span>
-                                    <span th:case="T(com.kelompok11.salonin.model.Booking.Status).DITERIMA" th:classappend="bg-green-100 text-green-800"></span>
-                                    <span th:case="T(com.kelompok11.salonin.model.Booking.Status).BATAL" th:classappend="bg-red-100 text-red-800"></span>
-                                    <span th:case="*">bg-gray-100 text-gray-800</span> 
-                                </span>
-                            </td>
-                            
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div th:if="${hasSelesaiBooking}">
-                                    <a th:if="${reviewExistMap[booking.id]}" 
-                                       th:href="@{'/reviews/view/' + ${booking.id}}"
-                                       class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 transition">
-                                        Lihat Review
-                                    </a>
-                                    <a th:if="${!reviewExistMap[booking.id]}"
-                                       th:href="@{'/reviews/create/' + ${booking.id}}"
-                                       class="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition">
-                                        Buat Review
-                                    </a>
-                                </div>
-                            </td>                           
-                            
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div
+          th:unless="${#lists.isEmpty(acceptedBookings)}"
+          class="overflow-x-auto mb-8"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Accepted Bookings
+          </h3>
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Customer
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Service
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Stylist
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Date & Time
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr th:each="booking : ${acceptedBookings}">
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                  th:text="${booking.user.name}"
+                ></td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  th:text="${booking.service.name}"
+                ></td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  th:text="${booking.employee.name}"
+                ></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <span
+                    th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"
+                  ></span>
+                  <span th:text="${booking.time}"></span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <form
+                    th:action="@{/bookings/{id}/status(id=${booking.id})}"
+                    method="post"
+                    class="inline"
+                  >
+                    <input type="hidden" name="status" value="SELESAI" />
+                    <button
+                      type="submit"
+                      class="text-green-600 hover:text-green-900 mr-3"
+                    >
+                      Selesai
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Admin/Employee Bookings Management Section -->
-        <div th:if="${userRole == 'ADMIN' or userRole == 'EMPLOYEE'}" class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Manage Bookings</h2>
-            
-            <div th:if="${#lists.isEmpty(pendingBookings)}" class="text-gray-500 text-center py-4 mb-6">
-                <p>No pending bookings to manage.</p>
-            </div>
-            
-            <div th:unless="${#lists.isEmpty(pendingBookings)}" class="overflow-x-auto mb-8">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Pending Bookings</h3>
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stylist</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr th:each="booking : ${pendingBookings}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.user.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.service.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.employee.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"></span>
-                                <span th:text="${booking.time}"></span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <form th:action="@{/bookings/{id}/status(id=${booking.id})}" method="post" class="inline">
-                                    <input type="hidden" name="status" value="DITERIMA">
-                                    <button type="submit" class="text-green-600 hover:text-green-900 mr-3">Accept</button>
-                                </form>
-                                <form th:action="@{/bookings/{id}/status(id=${booking.id})}" method="post" class="inline">
-                                    <input type="hidden" name="status" value="BATAL">
-                                    <button type="submit" class="text-red-600 hover:text-red-900">Reject</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div th:unless="${#lists.isEmpty(acceptedBookings)}" class="overflow-x-auto mb-8">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Accepted Bookings</h3>
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stylist</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr th:each="booking : ${acceptedBookings}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.user.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.service.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.employee.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"></span>
-                                <span th:text="${booking.time}"></span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <form th:action="@{/bookings/{id}/status(id=${booking.id})}" method="post" class="inline">
-                                    <input type="hidden" name="status" value="SELESAI">
-                                    <button type="submit" class="text-green-600 hover:text-green-900 mr-3">Selesai</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">All Bookings</h3>
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stylist</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr th:each="booking : ${allBookings}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${booking.user.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.service.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${booking.employee.name}"></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"></span>
-                                <span th:text="${booking.time}"></span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span th:class="${booking.status == 'PENDING' ? 'bg-yellow-100 text-yellow-800' : (booking.status == 'SELESAI' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')}" 
-                                      class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                      th:text="${booking.status}"></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="overflow-x-auto">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">All Bookings</h3>
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Customer
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Service
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Stylist
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Date & Time
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr th:each="booking : ${allBookings}">
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                  th:text="${booking.user.name}"
+                ></td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  th:text="${booking.service.name}"
+                ></td>
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                  th:text="${booking.employee.name}"
+                ></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <span
+                    th:text="${#temporals.format(booking.date, 'dd MMM yyyy')}"
+                  ></span>
+                  <span th:text="${booking.time}"></span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span
+                    th:class="${booking.status == 'PENDING' ? 'bg-yellow-100 text-yellow-800' : (booking.status == 'SELESAI' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')}"
+                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    th:text="${booking.status}"
+                  ></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <!-- Recent Activity -->
-        <div class="bg-white rounded-2xl shadow-lg p-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
-            <div class="text-gray-600">
-                <p>No recent activity to display.</p>
-            </div>
+      <!-- Recent Activity -->
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+        <div class="text-gray-600">
+          <p>No recent activity to display.</p>
         </div>
+      </div>
     </div>
     <script>
-        // Fungsi untuk memperbarui jumlah notifikasi
-        function updateNotificationCount() {
-            fetch('/notifications/api/count')
-                .then(response => response.json())
-                .then(data => {
-                    const badge = document.getElementById('notification-badge');
-                    if (data.count > 0) {
-                        if (badge) {
-                            badge.textContent = data.count;
-                            badge.style.display = 'flex';
-                        } else {
-                            const notificationIcon = document.querySelector('a[href="/notifications"]');
-                            const newBadge = document.createElement('span');
-                            newBadge.id = 'notification-badge';
-                            newBadge.className = 'absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center';
-                            newBadge.textContent = data.count;
-                            notificationIcon.appendChild(newBadge);
-                        }
-                    } else if (badge) {
-                        badge.style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error fetching notification count:', error));
-        }
-    
-        // Polling setiap 10 detik
-        setInterval(updateNotificationCount, 10000);
-        
-        // Panggil sekali saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', updateNotificationCount);
+      // Fungsi untuk memperbarui jumlah notifikasi
+      function updateNotificationCount() {
+        fetch("/notifications/api/count")
+          .then((response) => response.json())
+          .then((data) => {
+            const badge = document.getElementById("notification-badge");
+            if (data.count > 0) {
+              if (badge) {
+                badge.textContent = data.count;
+                badge.style.display = "flex";
+              } else {
+                const notificationIcon = document.querySelector(
+                  'a[href="/notifications"]'
+                );
+                const newBadge = document.createElement("span");
+                newBadge.id = "notification-badge";
+                newBadge.className =
+                  "absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center";
+                newBadge.textContent = data.count;
+                notificationIcon.appendChild(newBadge);
+              }
+            } else if (badge) {
+              badge.style.display = "none";
+            }
+          })
+          .catch((error) =>
+            console.error("Error fetching notification count:", error)
+          );
+      }
 
-        // Profile Dropdown Functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropdownButton = document.getElementById('profileDropdownButton');
-            const dropdownMenu = document.getElementById('profileDropdownMenu');
-            
-            // Toggle dropdown
-            dropdownButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleDropdown();
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                    closeDropdown();
-                }
-            });
-            
-            // Close dropdown on escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeDropdown();
-                }
-            });
-            
-            function toggleDropdown() {
-                if (dropdownMenu.classList.contains('opacity-0')) {
-                    openDropdown();
-                } else {
-                    closeDropdown();
-                }
-            }
-            
-            function openDropdown() {
-                dropdownMenu.classList.remove('opacity-0', 'invisible', 'scale-95');
-                dropdownMenu.classList.add('opacity-100', 'visible', 'scale-100');
-            }
-            
-            function closeDropdown() {
-                dropdownMenu.classList.remove('opacity-100', 'visible', 'scale-100');
-                dropdownMenu.classList.add('opacity-0', 'invisible', 'scale-95');
-            }
+      // Polling setiap 10 detik
+      setInterval(updateNotificationCount, 10000);
+
+      // Panggil sekali saat halaman dimuat
+      document.addEventListener("DOMContentLoaded", updateNotificationCount);
+
+      // Profile Dropdown Functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const dropdownButton = document.getElementById("profileDropdownButton");
+        const dropdownMenu = document.getElementById("profileDropdownMenu");
+
+        // Toggle dropdown
+        dropdownButton.addEventListener("click", function (e) {
+          e.stopPropagation();
+          toggleDropdown();
         });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (e) {
+          if (
+            !dropdownButton.contains(e.target) &&
+            !dropdownMenu.contains(e.target)
+          ) {
+            closeDropdown();
+          }
+        });
+
+        // Close dropdown on escape key
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            closeDropdown();
+          }
+        });
+
+        function toggleDropdown() {
+          if (dropdownMenu.classList.contains("opacity-0")) {
+            openDropdown();
+          } else {
+            closeDropdown();
+          }
+        }
+
+        function openDropdown() {
+          dropdownMenu.classList.remove("opacity-0", "invisible", "scale-95");
+          dropdownMenu.classList.add("opacity-100", "visible", "scale-100");
+        }
+
+        function closeDropdown() {
+          dropdownMenu.classList.remove("opacity-100", "visible", "scale-100");
+          dropdownMenu.classList.add("opacity-0", "invisible", "scale-95");
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -108,7 +108,7 @@ public class BookingController {
         }
         
         try {
-            Booking booking = bookingService.updateBookingStatus(id, status);
+            Booking booking = bookingService.updateBookingStatus(id, status.toString());
             
             // Kirim notifikasi ke customer tentang perubahan status
             String title = "Status Booking Diperbarui";

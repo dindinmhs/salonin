@@ -4,6 +4,7 @@ import com.kelompok11.salonin.model.Booking;
 import com.kelompok11.salonin.model.Service;
 import com.kelompok11.salonin.model.User;
 import com.kelompok11.salonin.repository.BookingRepository;
+import com.kelompok11.salonin.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
     
     @Autowired
     private UserService userService;
@@ -39,19 +43,24 @@ public class BookingService {
     }
     
     @Transactional
-    public Booking updateBookingStatus(Long bookingId, Booking.Status newStatus) {
+    public Booking updateBookingStatus(Long bookingId, String status) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
         
-        booking.setStatus(newStatus);
+        booking.setStatus(Booking.Status.valueOf(status));
+        booking = bookingRepository.save(booking);
         
-        if (newStatus == Booking.Status.SELESAI) {
+        if ("SELESAI".equals(status)) {
             User customer = booking.getUser();
-            customer.setBalance(customer.getBalance() - booking.getService().getPrice());
-            userService.updateUser(customer);  // Changed from save() to updateUser()
+            Integer newBalance = customer.getBalance() - booking.getService().getPrice();
+            customer.setBalance(newBalance);
+            
+            // PENTING: Jangan panggil updateUser, langsung save ke repository
+            // untuk menghindari enkripsi ulang password
+            userRepository.save(customer);
         }
         
-        return bookingRepository.save(booking);
+        return booking;
     }
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();

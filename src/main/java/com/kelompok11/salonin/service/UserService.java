@@ -101,4 +101,10 @@ public class UserService {
                 .collect(Collectors.toList());
     }
     
+    public void updateUserBalance(Long userId, Integer newBalance) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setBalance(newBalance);
+        userRepository.save(user); // Direct save, no password logic
+    }
 }
