@@ -78,4 +78,19 @@ public class BranchService {
         // Return URL path
         return "/images/branches/" + filename;
     }
+
+    public List<Branch> searchBranches(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllBranches();
+        }
+        return branchRepository.searchBranches(keyword.trim());
+    }
+
+    public List<Branch> getBranchesByCity(String city) {
+        return branchRepository.findByCityContainingIgnoreCase(city);
+    }
+
+    public List<Branch> getBranchesByProvince(String province) {
+        return branchRepository.findByProvinceContainingIgnoreCase(province);
+    }
 }

@@ -36,6 +36,9 @@ public class AuthController {
     @Autowired
     private NotificationsService notificationsService;
     
+    @Autowired
+    private com.kelompok11.salonin.service.BranchService branchService;
+    
     public AuthController(BookingService bookingService) {
         this.bookingService = bookingService;
 
@@ -62,6 +65,11 @@ public class AuthController {
         } else {
             model.addAttribute("isAuthenticated", false);
         }
+        
+        // Tambahkan data branch untuk ditampilkan di homepage
+        List<com.kelompok11.salonin.model.Branch> branches = branchService.getAllBranches();
+        model.addAttribute("branches", branches);
+        
         return "index";
     }
     
@@ -140,12 +148,7 @@ public class AuthController {
     }
     
     @GetMapping("/login")
-    public String showLoginForm(Model model, 
-                               @org.springframework.web.bind.annotation.RequestParam(value = "error", required = false) String error,
-                               @org.springframework.web.bind.annotation.RequestParam(value = "logout", required = false) String logout) {
-        if (error != null) {
-            model.addAttribute("errorMessage", "Invalid email or password.");
-        }
+    public String showLoginForm() {
         return "login";
     }
 }

@@ -95,4 +95,10 @@ public class UserService {
         return userRepository.findByBranchId(branchId);
     }
     
+    public List<User> getEmployeesByBranch(Long branchId) {
+        return userRepository.findByBranchId(branchId).stream()
+                .filter(user -> user.getRole() == User.Role.EMPLOYEE)
+                .collect(Collectors.toList());
+    }
+    
 }

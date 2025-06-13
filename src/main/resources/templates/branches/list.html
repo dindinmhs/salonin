@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Branches - Salonin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .branch-card {
+        transition: all 0.3s ease;
+      }
+      .branch-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+    <!-- Navigation -->
+    <nav
+      class="bg-white/90 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-b border-rose-100"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex items-center">
+            <a
+              href="/"
+              class="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent"
+            >
+              Salonin
+            </a>
+          </div>
+
+          <!-- Navigation Links -->
+          <div class="hidden md:flex items-center space-x-8">
+            <a
+              href="/"
+              class="text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 font-medium"
+              >Home</a
+            >
+            <a href="/branches" class="text-rose-600 font-medium">Branches</a>
+            <a
+              th:if="${isAuthenticated}"
+              href="/dashboard"
+              class="text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 font-medium"
+              >Dashboard</a
+            >
+          </div>
+
+          <!-- Auth Section -->
+          <div class="flex items-center space-x-4">
+            <!-- User authenticated section -->
+            <div th:if="${isAuthenticated}" class="flex items-center space-x-4">
+              <!-- Notifications -->
+              <div class="relative">
+                <a
+                  href="/notifications"
+                  class="text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    />
+                  </svg>
+                  <span
+                    th:if="${unreadNotificationsCount > 0}"
+                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                    th:text="${unreadNotificationsCount}"
+                    >0</span
+                  >
+                </a>
+              </div>
+
+              <!-- Profile -->
+              <div class="flex items-center space-x-2">
+                <span class="text-gray-700 hidden sm:block"
+                  >Hi, <span th:text="${user.name}" class="font-medium"></span
+                ></span>
+                <div
+                  class="w-8 h-8 rounded-full border-2 border-rose-300 overflow-hidden"
+                >
+                  <img
+                    th:if="${user.imgUrl != null and user.imgUrl != ''}"
+                    th:src="@{${user.imgUrl}}"
+                    alt="Profile Picture"
+                    class="w-full h-full object-cover"
+                  />
+                  <div
+                    th:unless="${user.imgUrl != null and user.imgUrl != ''}"
+                    class="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center"
+                  >
+                    <span
+                      class="text-white font-medium text-sm"
+                      th:text="${#strings.substring(user.name, 0, 1)}"
+                    ></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Guest section -->
+            <div
+              th:unless="${isAuthenticated}"
+              class="flex items-center space-x-4"
+            >
+              <a
+                href="/login"
+                class="text-gray-700 hover:text-rose-600 transition-all duration-300 hover:scale-105 font-medium px-4 py-2 rounded-full hover:bg-rose-50"
+              >
+                Login
+              </a>
+              <a
+                href="/register"
+                class="bg-gradient-to-r from-rose-500 to-pink-600 text-white px-6 py-2.5 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold"
+              >
+                Sign Up
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+          Find Our
+          <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-pink-600"
+            >Branches</span
+          >
+        </h1>
+        <p class="text-gray-600 text-lg">
+          Discover our salon locations near you
+        </p>
+      </div>
+
+      <!-- Search and Filter Section -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <form method="GET" action="/branches" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Search Input -->
+            <div class="md:col-span-2">
+              <label
+                for="search"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Search Branches</label
+              >
+              <input
+                type="text"
+                id="search"
+                name="search"
+                th:value="${searchKeyword}"
+                placeholder="Search by name, city, or province..."
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+              />
+            </div>
+
+            <!-- City Filter -->
+            <div>
+              <label
+                for="city"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >City</label
+              >
+              <select
+                id="city"
+                name="city"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+              >
+                <option value="">All Cities</option>
+                <option
+                  th:each="cityOption : ${cities}"
+                  th:value="${cityOption}"
+                  th:text="${cityOption}"
+                  th:selected="${cityOption == selectedCity}"
+                ></option>
+              </select>
+            </div>
+
+            <!-- Province Filter -->
+            <div>
+              <label
+                for="province"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Province</label
+              >
+              <select
+                id="province"
+                name="province"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+              >
+                <option value="">All Provinces</option>
+                <option
+                  th:each="provinceOption : ${provinces}"
+                  th:value="${provinceOption}"
+                  th:text="${provinceOption}"
+                  th:selected="${provinceOption == selectedProvince}"
+                ></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex justify-center space-x-4">
+            <button
+              type="submit"
+              class="bg-gradient-to-r from-rose-500 to-pink-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
+            >
+              <svg
+                class="w-5 h-5 inline mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+              Search
+            </button>
+            <a
+              href="/branches"
+              class="bg-gray-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors duration-300"
+            >
+              Clear
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results Count -->
+      <div class="mb-6">
+        <p class="text-gray-600">
+          <span class="font-semibold" th:text="${#lists.size(branches)}"
+            >0</span
+          >
+          <span th:if="${#lists.size(branches) == 1}">branch found</span>
+          <span th:unless="${#lists.size(branches) == 1}">branches found</span>
+          <span
+            th:if="${searchKeyword}"
+            th:text="' for \'' + ${searchKeyword} + '\''"
+          ></span>
+        </p>
+      </div>
+
+      <!-- Branches Grid -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        th:if="${not #lists.isEmpty(branches)}"
+      >
+        <div
+          th:each="branch : ${branches}"
+          class="branch-card bg-white rounded-2xl shadow-lg overflow-hidden"
+        >
+          <!-- Branch Image -->
+          <div
+            class="h-48 bg-gradient-to-br from-rose-100 to-pink-100 relative overflow-hidden"
+          >
+            <img
+              th:if="${branch.imgUrl != null and branch.imgUrl != ''}"
+              th:src="@{${branch.imgUrl}}"
+              th:alt="${branch.name}"
+              class="w-full h-full object-cover"
+            />
+            <div
+              th:unless="${branch.imgUrl != null and branch.imgUrl != ''}"
+              class="w-full h-full flex items-center justify-center"
+            >
+              <svg
+                class="w-16 h-16 text-rose-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                ></path>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Branch Info -->
+          <div class="p-6">
+            <h3
+              class="text-xl font-bold text-gray-900 mb-2"
+              th:text="${branch.name}"
+            >
+              Branch Name
+            </h3>
+
+            <div class="space-y-2 mb-4">
+              <div class="flex items-start space-x-2">
+                <svg
+                  class="w-5 h-5 text-rose-500 mt-0.5 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                </svg>
+                <div>
+                  <p class="text-gray-600 text-sm" th:text="${branch.address}">
+                    Address
+                  </p>
+                  <p
+                    class="text-gray-500 text-sm"
+                    th:text="${branch.city} + ', ' + ${branch.province}"
+                  >
+                    City, Province
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <svg
+                  class="w-5 h-5 text-rose-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <p class="text-gray-600 text-sm">
+                  <span th:text="${#temporals.format(branch.openTime, 'HH:mm')}"
+                    >09:00</span
+                  >
+                  -
+                  <span
+                    th:text="${#temporals.format(branch.closeTime, 'HH:mm')}"
+                    >21:00</span
+                  >
+                </p>
+              </div>
+            </div>
+
+            <a
+              th:href="@{'/branches/' + ${branch.id}}"
+              class="block w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white text-center py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
+            >
+              View Details & Book
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div th:if="${#lists.isEmpty(branches)}" class="text-center py-12">
+        <svg
+          class="w-24 h-24 text-gray-300 mx-auto mb-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+          ></path>
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+          No branches found
+        </h3>
+        <p class="text-gray-600 mb-4">
+          Try adjusting your search criteria or browse all branches.
+        </p>
+        <a
+          href="/branches"
+          class="inline-block bg-gradient-to-r from-rose-500 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+        >
+          View All Branches
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
