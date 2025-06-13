@@ -28,6 +28,7 @@ public class ReviewService {
         }
         
         review.setBooking(booking);
+        review.setUser(booking.getUser()); // Set user dari booking
         return reviewRepository.save(review);
     }
     
@@ -37,5 +38,19 @@ public class ReviewService {
     
     public Optional<Review> findByBookingId(Long bookingId) {
         return reviewRepository.findByBookingId(bookingId).stream().findFirst();
+    }
+    
+    public Double getBranchAverageRating(Long branchId) {
+        Double average = reviewRepository.getAverageRatingByBranchId(branchId);
+        return average != null ? Math.round(average * 10.0) / 10.0 : 0.0;
+    }
+    
+    public Long getBranchReviewCount(Long branchId) {
+        return reviewRepository.getReviewCountByBranchId(branchId);
+    }
+
+    public static Double getAverageRatingForBranch(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAverageRatingForBranch'");
     }
 }

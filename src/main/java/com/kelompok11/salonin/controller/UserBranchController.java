@@ -7,6 +7,7 @@ import com.kelompok11.salonin.service.BranchService;
 import com.kelompok11.salonin.service.ServiceService;
 import com.kelompok11.salonin.service.UserService;
 import com.kelompok11.salonin.service.NotificationsService;
+import com.kelompok11.salonin.service.ReviewService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -33,6 +34,9 @@ public class UserBranchController {
     
     @Autowired
     private NotificationsService notificationsService;
+    
+    @Autowired
+    private ReviewService reviewService;
     
     // Helper method to add user info to model
     private void addUserInfoToModel(Model model) {
@@ -109,9 +113,15 @@ public class UserBranchController {
         List<Service> services = serviceService.getServicesByBranch(id);
         List<User> employees = userService.getEmployeesByBranch(id);
         
+        // Tambahkan rating data
+        Double averageRating = reviewService.getBranchAverageRating(id);
+        Long reviewCount = reviewService.getBranchReviewCount(id);
+        
         model.addAttribute("branch", branch);
         model.addAttribute("services", services);
         model.addAttribute("employees", employees);
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("reviewCount", reviewCount);
         
         return "branches/detail";
     }

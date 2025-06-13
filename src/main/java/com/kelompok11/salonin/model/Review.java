@@ -2,6 +2,7 @@ package com.kelompok11.salonin.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.kelompok11.salonin.model.User;
 
 @Entity
 @Table(name = "reviews")
@@ -13,6 +14,10 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private Integer rate;
@@ -86,5 +91,13 @@ public class Review {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
