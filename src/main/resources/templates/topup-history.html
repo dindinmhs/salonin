@@ -216,7 +216,7 @@
       </div>
     </nav>
 
-    <div class="max-w-4xl mx-auto p-6 mb-32">
+    <div class="max-w-4xl mx-auto p-6 mb-64">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Riwayat Top Up</h1>
         <a
@@ -318,7 +318,7 @@
       </div>
     </div>
 
-<footer
+    <footer
       class="bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white py-12 relative overflow-hidden"
     >
       <div class="absolute inset-0 bg-black/30"></div>
@@ -353,36 +353,41 @@
     </footer>
 
     <script>
-        // Fungsi untuk memperbarui jumlah notifikasi
-        function updateNotificationCount() {
-            fetch('/notifications/api/count')
-                .then(response => response.json())
-                .then(data => {
-                    const badge = document.getElementById('notification-badge');
-                    if (data.count > 0) {
-                        if (badge) {
-                            badge.textContent = data.count;
-                            badge.style.display = 'flex';
-                        } else {
-                            const notificationIcon = document.querySelector('a[href="/notifications"]');
-                            const newBadge = document.createElement('span');
-                            newBadge.id = 'notification-badge';
-                            newBadge.className = 'absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center';
-                            newBadge.textContent = data.count;
-                            notificationIcon.appendChild(newBadge);
-                        }
-                    } else if (badge) {
-                        badge.style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error fetching notification count:', error));
-        }
-    
-        // Polling setiap 10 detik
-        setInterval(updateNotificationCount, 10000);
-        
-        // Panggil sekali saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', updateNotificationCount);
+      // Fungsi untuk memperbarui jumlah notifikasi
+      function updateNotificationCount() {
+        fetch("/notifications/api/count")
+          .then((response) => response.json())
+          .then((data) => {
+            const badge = document.getElementById("notification-badge");
+            if (data.count > 0) {
+              if (badge) {
+                badge.textContent = data.count;
+                badge.style.display = "flex";
+              } else {
+                const notificationIcon = document.querySelector(
+                  'a[href="/notifications"]'
+                );
+                const newBadge = document.createElement("span");
+                newBadge.id = "notification-badge";
+                newBadge.className =
+                  "absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center";
+                newBadge.textContent = data.count;
+                notificationIcon.appendChild(newBadge);
+              }
+            } else if (badge) {
+              badge.style.display = "none";
+            }
+          })
+          .catch((error) =>
+            console.error("Error fetching notification count:", error)
+          );
+      }
+
+      // Polling setiap 10 detik
+      setInterval(updateNotificationCount, 10000);
+
+      // Panggil sekali saat halaman dimuat
+      document.addEventListener("DOMContentLoaded", updateNotificationCount);
       // Profile dropdown functionality
       document.addEventListener("DOMContentLoaded", function () {
         const dropdownButton = document.getElementById("profileDropdownButton");

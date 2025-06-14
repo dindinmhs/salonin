@@ -1,181 +1,297 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${branch.id != null ? 'Edit Branch' : 'Add New Branch'} + ' - Seniora Beauty Salon'">Branch Form - Salonin Beauty Salon</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title
+      th:text="${branch.id != null ? 'Edit Branch' : 'Add New Branch'} + ' - Seniora Beauty Salon'"
+    >
+      Branch Form - Salonin Beauty Salon
+    </title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Inter', sans-serif; }
+      body {
+        font-family: "Inter", sans-serif;
+      }
     </style>
-</head>
-<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+  </head>
+  <body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-4">
-                    <a href="/dashboard" class="text-2xl font-bold text-gray-800">Salonin</a>
-                    <span class="text-gray-500">/</span>
-                    <a href="/admin/branches" class="text-gray-600 hover:text-gray-800">Branch Management</a>
-                    <span class="text-gray-500">/</span>
-                    <span class="text-gray-700 font-medium" th:text="${branch.id != null ? 'Edit Branch' : 'Add New Branch'}">Form</span>
-                </div>
-                <a href="/admin/branches" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">
-                    Back to Branches
-                </a>
-            </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center space-x-4">
+            <a href="/dashboard" class="text-2xl font-bold text-gray-800"
+              >Salonin</a
+            >
+            <span class="text-gray-500">/</span>
+            <a href="/admin/branches" class="text-gray-600 hover:text-gray-800"
+              >Branch Management</a
+            >
+            <span class="text-gray-500">/</span>
+            <span
+              class="text-gray-700 font-medium"
+              th:text="${branch.id != null ? 'Edit Branch' : 'Add New Branch'}"
+              >Form</span
+            >
+          </div>
+          <a
+            href="/admin/branches"
+            class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors"
+          >
+            Back to Branches
+          </a>
         </div>
+      </div>
     </nav>
 
     <!-- Flash Messages -->
-    <div th:if="${successMessage}" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <span th:text="${successMessage}"></span>
-        </div>
+    <div
+      th:if="${successMessage}"
+      class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4"
+    >
+      <div
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+      >
+        <span th:text="${successMessage}"></span>
+      </div>
     </div>
-    <div th:if="${errorMessage}" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <span th:text="${errorMessage}"></span>
-        </div>
+    <div
+      th:if="${errorMessage}"
+      class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4"
+    >
+      <div
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+      >
+        <span th:text="${errorMessage}"></span>
+      </div>
     </div>
 
     <!-- Content -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header -->
-        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2" th:text="${branch.id != null ? 'Edit Branch' : 'Add New Branch'}">Branch Form</h1>
-            <p class="text-gray-600" th:text="${branch.id != null ? 'Update branch information and settings' : 'Create a new salon branch location'}">Form description</p>
-        </div>
+      <!-- Header -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <h1
+          class="text-3xl font-bold text-gray-900 mb-2"
+          th:text="${branch.id != null ? 'Edit Branch' : 'Add New Branch'}"
+        >
+          Branch Form
+        </h1>
+        <p
+          class="text-gray-600"
+          th:text="${branch.id != null ? 'Update branch information and settings' : 'Create a new salon branch location'}"
+        >
+          Form description
+        </p>
+      </div>
 
-        <!-- Form -->
-        <div class="bg-white rounded-2xl shadow-lg p-8">
-            <form th:action="${branch.id != null ? '/admin/branches/update/' + branch.id : '/admin/branches'}" 
-                  method="post" 
-                  enctype="multipart/form-data" 
-                  th:object="${branch}"
-                  class="space-y-6">
-                
-                <!-- Branch Name -->
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Branch Name *</label>
-                    <input type="text" 
-                           id="name" 
-                           th:field="*{name}"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                           placeholder="Enter branch name"
-                           required>
-                </div>
+      <!-- Form -->
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        <form
+          th:action="${branch.id != null ? '/admin/branches/update/' + branch.id : '/admin/branches'}"
+          method="post"
+          enctype="multipart/form-data"
+          th:object="${branch}"
+          class="space-y-6"
+        >
+          <!-- Branch Name -->
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Branch Name *</label
+            >
+            <input
+              type="text"
+              id="name"
+              th:field="*{name}"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+              placeholder="Enter branch name"
+              required
+            />
+          </div>
 
-                <!-- Address -->
-                <div>
-                    <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Address *</label>
-                    <textarea id="address" 
-                              th:field="*{address}"
-                              rows="3"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                              placeholder="Enter complete address"
-                              required></textarea>
-                </div>
+          <!-- Address -->
+          <div>
+            <label
+              for="address"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Address *</label
+            >
+            <textarea
+              id="address"
+              th:field="*{address}"
+              rows="3"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+              placeholder="Enter complete address"
+              required
+            ></textarea>
+          </div>
 
-                <!-- City and Province -->
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City *</label>
-                        <input type="text" 
-                               id="city" 
-                               th:field="*{city}"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                               placeholder="Enter city"
-                               required>
-                    </div>
-                    <div>
-                        <label for="province" class="block text-sm font-medium text-gray-700 mb-2">Province *</label>
-                        <input type="text" 
-                               id="province" 
-                               th:field="*{province}"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                               placeholder="Enter province"
-                               required>
-                    </div>
-                </div>
+          <!-- City and Province -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label
+                for="city"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >City *</label
+              >
+              <input
+                type="text"
+                id="city"
+                th:field="*{city}"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                placeholder="Enter city"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="province"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Province *</label
+              >
+              <input
+                type="text"
+                id="province"
+                th:field="*{province}"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                placeholder="Enter province"
+                required
+              />
+            </div>
+          </div>
 
-                <!-- Operating Hours -->
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="openTime" class="block text-sm font-medium text-gray-700 mb-2">Opening Time *</label>
-                        <input type="time" 
-                               id="openTime" 
-                               th:field="*{openTime}"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                               required>
-                    </div>
-                    <div>
-                        <label for="closeTime" class="block text-sm font-medium text-gray-700 mb-2">Closing Time *</label>
-                        <input type="time" 
-                               id="closeTime" 
-                               th:field="*{closeTime}"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                               required>
-                    </div>
-                </div>
+          <!-- Operating Hours -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label
+                for="openTime"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Opening Time *</label
+              >
+              <input
+                type="time"
+                id="openTime"
+                th:field="*{openTime}"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="closeTime"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Closing Time *</label
+              >
+              <input
+                type="time"
+                id="closeTime"
+                th:field="*{closeTime}"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                required
+              />
+            </div>
+          </div>
 
-                <!-- Current Image (Edit Mode) -->
-                <div th:if="${branch.id != null and branch.imgUrl != null}">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Image</label>
-                    <div class="w-32 h-32 rounded-lg overflow-hidden border border-gray-300">
-                        <img th:src="${branch.imgUrl}" th:alt="${branch.name}" class="w-full h-full object-cover">
-                    </div>
-                </div>
+          <!-- Current Image (Edit Mode) -->
+          <div th:if="${branch.id != null and branch.imgUrl != null}">
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Current Image</label
+            >
+            <div
+              class="w-32 h-32 rounded-lg overflow-hidden border border-gray-300"
+            >
+              <img
+                th:src="${branch.imgUrl}"
+                th:alt="${branch.name}"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
 
-                <!-- Image Upload -->
-                <div>
-                    <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">
-                        <span th:text="${branch.id != null ? 'Change Image (Optional)' : 'Branch Image (Optional)'}">Branch Image</span>
-                    </label>
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-rose-400 transition-colors">
-                        <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                        </svg>
-                        <input type="file" 
-                               id="imageFile" 
-                               name="imageFile"
-                               accept="image/*"
-                               class="hidden"
-                               onchange="updateFileName(this)">
-                        <label for="imageFile" class="cursor-pointer">
-                            <span class="text-rose-600 hover:text-rose-700 font-medium">Click to upload</span>
-                            <span class="text-gray-500"> or drag and drop</span>
-                        </label>
-                        <p class="text-sm text-gray-500 mt-2">PNG, JPG, GIF up to 10MB</p>
-                        <p id="fileName" class="text-sm text-gray-700 mt-2 hidden"></p>
-                    </div>
-                </div>
+          <!-- Image Upload -->
+          <div>
+            <label
+              for="imageFile"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              <span
+                th:text="${branch.id != null ? 'Change Image (Optional)' : 'Branch Image (Optional)'}"
+                >Branch Image</span
+              >
+            </label>
+            <div
+              class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-rose-400 transition-colors"
+            >
+              <svg
+                class="w-12 h-12 mx-auto text-gray-400 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                />
+              </svg>
+              <input
+                type="file"
+                id="imageFile"
+                name="imageFile"
+                accept="image/*"
+                class="hidden"
+                onchange="updateFileName(this)"
+              />
+              <label for="imageFile" class="cursor-pointer">
+                <span class="text-rose-600 hover:text-rose-700 font-medium"
+                  >Click to upload</span
+                >
+                <span class="text-gray-500"> or drag and drop</span>
+              </label>
+              <p class="text-sm text-gray-500 mt-2">PNG, JPG, GIF up to 10MB</p>
+              <p id="fileName" class="text-sm text-gray-700 mt-2 hidden"></p>
+            </div>
+          </div>
 
-                <!-- Form Actions -->
-                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                    <a href="/admin/branches" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-                        Cancel
-                    </a>
-                    <button type="submit" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors font-medium">
-                        <span th:text="${branch.id != null ? 'Update Branch' : 'Create Branch'}">Submit</span>
-                    </button>
-                </div>
-            </form>
-        </div>
+          <!-- Form Actions -->
+          <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+            <a
+              href="/admin/branches"
+              class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              Cancel
+            </a>
+            <button
+              type="submit"
+              class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors font-medium"
+            >
+              <span
+                th:text="${branch.id != null ? 'Update Branch' : 'Create Branch'}"
+                >Submit</span
+              >
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script>
-        function updateFileName(input) {
-            const fileName = document.getElementById('fileName');
-            if (input.files && input.files[0]) {
-                fileName.textContent = 'Selected: ' + input.files[0].name;
-                fileName.classList.remove('hidden');
-            } else {
-                fileName.classList.add('hidden');
-            }
+      function updateFileName(input) {
+        const fileName = document.getElementById("fileName");
+        if (input.files && input.files[0]) {
+          fileName.textContent = "Selected: " + input.files[0].name;
+          fileName.classList.remove("hidden");
+        } else {
+          fileName.classList.add("hidden");
         }
+      }
     </script>
-</body>
+  </body>
 </html>

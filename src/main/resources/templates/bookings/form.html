@@ -1,158 +1,257 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Appointment - Salonin Beauty Salon</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Inter', sans-serif; }
+      body {
+        font-family: "Inter", sans-serif;
+      }
     </style>
-</head>
-<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+  </head>
+  <body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/dashboard" class="text-2xl font-bold text-gray-800">Salonin</a>
-                </div>
-                
-                <!-- User Info & Logout -->
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-700">Welcome, <span th:text="${user.name}" class="font-medium"></span></span>
-                    <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium" th:text="${userRole}"></span>
-                    <form th:action="@{/logout}" method="post" class="inline">
-                        <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">
-                            Logout
-                        </button>
-                    </form>
-                </div>
-            </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex items-center">
+            <a href="/dashboard" class="text-2xl font-bold text-gray-800"
+              >Salonin</a
+            >
+          </div>
+
+          <!-- User Info & Logout -->
+          <div class="flex items-center space-x-4">
+            <span class="text-gray-700"
+              >Welcome, <span th:text="${user.name}" class="font-medium"></span
+            ></span>
+            <span
+              class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-medium"
+              th:text="${userRole}"
+            ></span>
+            <form th:action="@{/logout}" method="post" class="inline">
+              <button
+                type="submit"
+                class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors"
+              >
+                Logout
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
     </nav>
 
     <!-- Flash Messages -->
-    <div th:if="${successMessage}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <span th:text="${successMessage}"></span>
-        </div>
+    <div
+      th:if="${successMessage}"
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4"
+    >
+      <div
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+      >
+        <span th:text="${successMessage}"></span>
+      </div>
     </div>
-    <div th:if="${errorMessage}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <span th:text="${errorMessage}"></span>
-        </div>
+    <div
+      th:if="${errorMessage}"
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4"
+    >
+      <div
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+      >
+        <span th:text="${errorMessage}"></span>
+      </div>
     </div>
 
     <!-- Booking Form -->
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Book an Appointment</h2>
-                <a href="/dashboard" class="text-rose-500 hover:text-rose-600 font-medium">Back to Dashboard</a>
-            </div>
-            
-            <form th:action="@{/bookings/create}" method="post" th:object="${bookingRequest}" class="space-y-6">
-                <!-- Branch Selection -->
-                <div>
-                    <label for="branch" class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                    <select id="branch" name="branch" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm rounded-md" required>
-                        <option value="">Select a branch</option>
-                        <option th:each="branch : ${branches}" th:value="${branch.id}" th:text="${branch.name}"></option>
-                    </select>
-                </div>
-                
-                <!-- Service Selection -->
-                <div>
-                    <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Service</label>
-                    <select id="service" name="service" th:field="*{service}" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm rounded-md" required disabled>
-                        <option value="">Select a branch first</option>
-                    </select>
-                </div>
-                
-                <!-- Employee Selection -->
-                <div>
-                    <label for="employee" class="block text-sm font-medium text-gray-700 mb-1">Stylist</label>
-                    <select id="employee" name="employee" th:field="*{employee}" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm rounded-md" required disabled>
-                        <option value="">Select a stylist</option>
-                    </select>
-                </div>
-                
-                <!-- Date Selection -->
-                <div>
-                    <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" id="date" name="date" th:field="*{date}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm" required>
-                </div>
-                
-                <!-- Time Selection -->
-                <div>
-                    <label for="time" class="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                    <input type="time" id="time" name="time" th:field="*{time}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm" required>
-                </div>
-                
-                <!-- Submit Button -->
-                <div class="pt-4">
-                    <button type="submit" class="w-full bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-lg transition-colors">
-                        Book Appointment
-                    </button>
-                </div>
-            </form>
+      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-900">Book an Appointment</h2>
+          <a
+            href="/dashboard"
+            class="text-rose-500 hover:text-rose-600 font-medium"
+            >Back to Dashboard</a
+          >
         </div>
-    </div>
-    
-    <script>
-        document.getElementById('branch').addEventListener('change', function() {
-            const branchId = this.value;
-            const serviceSelect = document.getElementById('service');
-            const employeeSelect = document.getElementById('employee');
-            
-            if (branchId) {
-                // Enable service selection
-                serviceSelect.disabled = false;
-                employeeSelect.disabled = false;
-                // Fetch services for selected branch
-                fetch(`/bookings/services/${branchId}`)
-                    .then(response => response.json())
-                    .then(services => {
-                        // Clear existing options
-                        serviceSelect.innerHTML = '<option value="">Select a service</option>';
-                        
-                        // Add new options
-                        services.forEach(service => {
-                            const option = document.createElement('option');
-                            option.value = service.id;
-                            option.textContent = `${service.name} - Rp ${service.price.toLocaleString()}`;
-                            serviceSelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Error:', error));
 
-                fetch(`/bookings/users/${branchId}`)
-                    .then(response => response.json())
-                    .then(users => {
-                        // Clear existing options
-                        employeeSelect.innerHTML = '<option value="">Select a stylist</option>';
-                        
-                        // Add new options
-                        users.forEach(employee => {
-                            const option = document.createElement('option');
-                            option.value = employee.id;
-                            option.textContent = `${employee.name}`;
-                            employeeSelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Error:', error));
-            } else {
-                // Disable and reset service selection
-                serviceSelect.disabled = true;
-                employeeSelect.disabled = true;
-                serviceSelect.innerHTML = '<option value="">Select a branch first</option>';
-                employeeSelect.innerHTML = '<option value="">Select a branch first</option>';
-            }
-        });
+        <form
+          th:action="@{/bookings/create}"
+          method="post"
+          th:object="${bookingRequest}"
+          class="space-y-6"
+        >
+          <!-- Branch Selection -->
+          <div>
+            <label
+              for="branch"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Branch</label
+            >
+            <select
+              id="branch"
+              name="branch"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm rounded-md"
+              required
+            >
+              <option value="">Select a branch</option>
+              <option
+                th:each="branch : ${branches}"
+                th:value="${branch.id}"
+                th:text="${branch.name}"
+              ></option>
+            </select>
+          </div>
+
+          <!-- Service Selection -->
+          <div>
+            <label
+              for="service"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Service</label
+            >
+            <select
+              id="service"
+              name="service"
+              th:field="*{service}"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm rounded-md"
+              required
+              disabled
+            >
+              <option value="">Select a branch first</option>
+            </select>
+          </div>
+
+          <!-- Employee Selection -->
+          <div>
+            <label
+              for="employee"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Stylist</label
+            >
+            <select
+              id="employee"
+              name="employee"
+              th:field="*{employee}"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm rounded-md"
+              required
+              disabled
+            >
+              <option value="">Select a stylist</option>
+            </select>
+          </div>
+
+          <!-- Date Selection -->
+          <div>
+            <label
+              for="date"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Date</label
+            >
+            <input
+              type="date"
+              id="date"
+              name="date"
+              th:field="*{date}"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+              required
+            />
+          </div>
+
+          <!-- Time Selection -->
+          <div>
+            <label
+              for="time"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Time</label
+            >
+            <input
+              type="time"
+              id="time"
+              name="time"
+              th:field="*{time}"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+              required
+            />
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-4">
+            <button
+              type="submit"
+              class="w-full bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-lg transition-colors"
+            >
+              Book Appointment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("branch").addEventListener("change", function () {
+        const branchId = this.value;
+        const serviceSelect = document.getElementById("service");
+        const employeeSelect = document.getElementById("employee");
+
+        if (branchId) {
+          // Enable service selection
+          serviceSelect.disabled = false;
+          employeeSelect.disabled = false;
+          // Fetch services for selected branch
+          fetch(`/bookings/services/${branchId}`)
+            .then((response) => response.json())
+            .then((services) => {
+              // Clear existing options
+              serviceSelect.innerHTML =
+                '<option value="">Select a service</option>';
+
+              // Add new options
+              services.forEach((service) => {
+                const option = document.createElement("option");
+                option.value = service.id;
+                option.textContent = `${
+                  service.name
+                } - Rp ${service.price.toLocaleString()}`;
+                serviceSelect.appendChild(option);
+              });
+            })
+            .catch((error) => console.error("Error:", error));
+
+          fetch(`/bookings/users/${branchId}`)
+            .then((response) => response.json())
+            .then((users) => {
+              // Clear existing options
+              employeeSelect.innerHTML =
+                '<option value="">Select a stylist</option>';
+
+              // Add new options
+              users.forEach((employee) => {
+                const option = document.createElement("option");
+                option.value = employee.id;
+                option.textContent = `${employee.name}`;
+                employeeSelect.appendChild(option);
+              });
+            })
+            .catch((error) => console.error("Error:", error));
+        } else {
+          // Disable and reset service selection
+          serviceSelect.disabled = true;
+          employeeSelect.disabled = true;
+          serviceSelect.innerHTML =
+            '<option value="">Select a branch first</option>';
+          employeeSelect.innerHTML =
+            '<option value="">Select a branch first</option>';
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

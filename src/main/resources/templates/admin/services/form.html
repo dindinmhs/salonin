@@ -1,135 +1,217 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${service.id != null ? 'Edit Service' : 'Add New Service'} + ' - Seniora Beauty Salon'">Service Form - Salonin Beauty Salon</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title
+      th:text="${service.id != null ? 'Edit Service' : 'Add New Service'} + ' - Seniora Beauty Salon'"
+    >
+      Service Form - Salonin Beauty Salon
+    </title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Inter', sans-serif; }
+      body {
+        font-family: "Inter", sans-serif;
+      }
     </style>
-</head>
-<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+  </head>
+  <body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-4">
-                    <a href="/dashboard" class="text-2xl font-bold text-gray-800">Salonin</a>
-                    <span class="text-gray-500">/</span>
-                    <a href="/admin/services" class="text-gray-600 hover:text-gray-800">Service Management</a>
-                    <span class="text-gray-500">/</span>
-                    <span class="text-gray-700 font-medium" th:text="${service.id != null ? 'Edit Service' : 'Add New Service'}">Form</span>
-                </div>
-                <a href="/admin/services" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors">
-                    Back to Services
-                </a>
-            </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center space-x-4">
+            <a href="/dashboard" class="text-2xl font-bold text-gray-800"
+              >Salonin</a
+            >
+            <span class="text-gray-500">/</span>
+            <a href="/admin/services" class="text-gray-600 hover:text-gray-800"
+              >Service Management</a
+            >
+            <span class="text-gray-500">/</span>
+            <span
+              class="text-gray-700 font-medium"
+              th:text="${service.id != null ? 'Edit Service' : 'Add New Service'}"
+              >Form</span
+            >
+          </div>
+          <a
+            href="/admin/services"
+            class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-full transition-colors"
+          >
+            Back to Services
+          </a>
         </div>
+      </div>
     </nav>
 
     <!-- Flash Messages -->
-    <div th:if="${successMessage}" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <span th:text="${successMessage}"></span>
-        </div>
+    <div
+      th:if="${successMessage}"
+      class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4"
+    >
+      <div
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+      >
+        <span th:text="${successMessage}"></span>
+      </div>
     </div>
-    <div th:if="${errorMessage}" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <span th:text="${errorMessage}"></span>
-        </div>
+    <div
+      th:if="${errorMessage}"
+      class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4"
+    >
+      <div
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+      >
+        <span th:text="${errorMessage}"></span>
+      </div>
     </div>
 
     <!-- Content -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header -->
-        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2" th:text="${service.id != null ? 'Edit Service' : 'Add New Service'}">Service Form</h1>
-            <p class="text-gray-600" th:text="${service.id != null ? 'Update service information and details' : 'Create a new salon service or treatment'}">Form description</p>
-        </div>
+      <!-- Header -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <h1
+          class="text-3xl font-bold text-gray-900 mb-2"
+          th:text="${service.id != null ? 'Edit Service' : 'Add New Service'}"
+        >
+          Service Form
+        </h1>
+        <p
+          class="text-gray-600"
+          th:text="${service.id != null ? 'Update service information and details' : 'Create a new salon service or treatment'}"
+        >
+          Form description
+        </p>
+      </div>
 
-        <!-- Form -->
-        <div class="bg-white rounded-2xl shadow-lg p-8">
-            <form th:action="${service.id != null ? '/admin/services/update/' + service.id : '/admin/services'}" 
-                  method="post" 
-                  th:object="${service}"
-                  class="space-y-6">
-                
-                <!-- Service Name -->
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Service Name *</label>
-                    <input type="text" 
-                           id="name" 
-                           th:field="*{name}"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                           placeholder="Enter service name"
-                           required>
-                </div>
+      <!-- Form -->
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        <form
+          th:action="${service.id != null ? '/admin/services/update/' + service.id : '/admin/services'}"
+          method="post"
+          th:object="${service}"
+          class="space-y-6"
+        >
+          <!-- Service Name -->
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Service Name *</label
+            >
+            <input
+              type="text"
+              id="name"
+              th:field="*{name}"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+              placeholder="Enter service name"
+              required
+            />
+          </div>
 
-                <!-- Description -->
-                <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
-                    <textarea id="description" 
-                              th:field="*{description}"
-                              rows="4"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                              placeholder="Enter service description"
-                              required></textarea>
-                </div>
+          <!-- Description -->
+          <div>
+            <label
+              for="description"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Description *</label
+            >
+            <textarea
+              id="description"
+              th:field="*{description}"
+              rows="4"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+              placeholder="Enter service description"
+              required
+            ></textarea>
+          </div>
 
-                <!-- Branch Selection -->
-                <div>
-                    <label for="branch" class="block text-sm font-medium text-gray-700 mb-2">Branch *</label>
-                    <select id="branch" 
-                            th:field="*{branch}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                            required>
-                        <option value="">Select a branch</option>
-                        <option th:each="branch : ${branches}" 
-                                th:value="${branch.id}" 
-                                th:text="${branch.name}"
-                                th:selected="${service.branch != null and service.branch.id == branch.id}">
-                            Branch Name
-                        </option>
-                    </select>
-                </div>
+          <!-- Branch Selection -->
+          <div>
+            <label
+              for="branch"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Branch *</label
+            >
+            <select
+              id="branch"
+              th:field="*{branch}"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+              required
+            >
+              <option value="">Select a branch</option>
+              <option
+                th:each="branch : ${branches}"
+                th:value="${branch.id}"
+                th:text="${branch.name}"
+                th:selected="${service.branch != null and service.branch.id == branch.id}"
+              >
+                Branch Name
+              </option>
+            </select>
+          </div>
 
-                <!-- Price and Duration -->
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Price (Rp) *</label>
-                        <input type="number" 
-                               id="price" 
-                               th:field="*{price}"
-                               min="0"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                               placeholder="Enter price"
-                               required>
-                    </div>
-                    <div>
-                        <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Duration (minutes) *</label>
-                        <input type="number" 
-                               id="duration" 
-                               th:field="*{duration}"
-                               min="1"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                               placeholder="Enter duration in minutes"
-                               required>
-                    </div>
-                </div>
+          <!-- Price and Duration -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label
+                for="price"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Price (Rp) *</label
+              >
+              <input
+                type="number"
+                id="price"
+                th:field="*{price}"
+                min="0"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                placeholder="Enter price"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="duration"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Duration (minutes) *</label
+              >
+              <input
+                type="number"
+                id="duration"
+                th:field="*{duration}"
+                min="1"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                placeholder="Enter duration in minutes"
+                required
+              />
+            </div>
+          </div>
 
-                <!-- Form Actions -->
-                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                    <a href="/admin/services" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-                        Cancel
-                    </a>
-                    <button type="submit" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors font-medium">
-                        <span th:text="${service.id != null ? 'Update Service' : 'Create Service'}">Submit</span>
-                    </button>
-                </div>
-            </form>
-        </div>
+          <!-- Form Actions -->
+          <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+            <a
+              href="/admin/services"
+              class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              Cancel
+            </a>
+            <button
+              type="submit"
+              class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors font-medium"
+            >
+              <span
+                th:text="${service.id != null ? 'Update Service' : 'Create Service'}"
+                >Submit</span
+              >
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-</body>
+  </body>
 </html>
