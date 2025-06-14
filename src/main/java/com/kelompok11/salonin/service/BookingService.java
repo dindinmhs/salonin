@@ -8,6 +8,7 @@ import com.kelompok11.salonin.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +87,36 @@ public class BookingService {
 
     public List<Booking> getBookingsByEmployeeSimple(User employee) {
         return bookingRepository.findByEmployee(employee);
+    }
+
+    public Double getTotalRevenueThisMonth() {
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDate endOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+        
+        List<Booking> bookings = bookingRepository.findByDateBetweenAndStatus(
+            startOfMonth, endOfMonth, Booking.Status.SELESAI);
+        
+        return bookings.stream()
+            .mapToDouble(booking -> booking.getService().getPrice())
+            .sum();
+    }
+    
+    public Long getBookingCountThisMonth() {
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDate endOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+        
+        return bookingRepository.countByDateBetween(startOfMonth, endOfMonth);
+    }
+
+    public List<Booking> getPendingBookingsByEmployee(User user) {
+        if (user == null) {
+            return new ArrayList<>();
+        }
+        return bookingRepository.findByEmployeeAndStatusOrderByDateAscTimeAsc(user, Booking.Status.PENDING);
+    }
+
+    public List<Booking> getBookingsByUser(User user) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBookingsByUser'");
     }
 }

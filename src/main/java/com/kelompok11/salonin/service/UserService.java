@@ -107,4 +107,8 @@ public class UserService {
         user.setBalance(newBalance);
         userRepository.save(user); // Direct save, no password logic
     }
+    
+    public Long getCustomerCount() {
+        return userRepository.countByRole(User.Role.CUSTOMER);
+    }
 }

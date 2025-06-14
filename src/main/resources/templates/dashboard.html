@@ -271,6 +271,137 @@
         </div>
       </div>
 
+      <!-- Admin Analytics Section -->
+      <div th:if="${userRole == 'ADMIN'}" class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Business Analytics</h2>
+        
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <!-- Total Revenue Card -->
+          <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-green-100 text-sm font-medium">Total Revenue</p>
+                <p class="text-2xl font-bold" th:text="'Rp ' + ${#numbers.formatDecimal(totalRevenue ?: 0, 0, 'COMMA', 0, 'POINT')}">Rp 0</p>
+                <p class="text-green-100 text-xs mt-1">This month</p>
+              </div>
+              <div class="bg-green-400 bg-opacity-30 rounded-lg p-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Customers Card -->
+          <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-blue-100 text-sm font-medium">Total Customers</p>
+                <p class="text-2xl font-bold" th:text="${totalCustomers ?: 0}">0</p>
+                <p class="text-blue-100 text-xs mt-1">Active users</p>
+              </div>
+              <div class="bg-blue-400 bg-opacity-30 rounded-lg p-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Bookings Card -->
+          <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-purple-100 text-sm font-medium">Total Bookings</p>
+                <p class="text-2xl font-bold" th:text="${totalBookings ?: 0}">0</p>
+                <p class="text-purple-100 text-xs mt-1">This month</p>
+              </div>
+              <div class="bg-purple-400 bg-opacity-30 rounded-lg p-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a4 4 0 118 0v4m-4 12v-6m0 0V7m0 6h6m-6 0H6"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Average Rating Card -->
+          <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-yellow-100 text-sm font-medium">Average Rating</p>
+                <div class="flex items-center">
+                  <p class="text-2xl font-bold mr-2" th:text="${averageRating ?: '0.0'}">0.0</p>
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                </div>
+                <p class="text-yellow-100 text-xs mt-1">Customer satisfaction</p>
+              </div>
+              <div class="bg-yellow-400 bg-opacity-30 rounded-lg p-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity & Quick Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Recent Activity -->
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent System Activity</h3>
+            <div class="space-y-4">
+              <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">New customer registration</p>
+                  <p class="text-xs text-gray-500">2 minutes ago</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">Booking completed</p>
+                  <p class="text-xs text-gray-500">5 minutes ago</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">New review submitted</p>
+                  <p class="text-xs text-gray-500">10 minutes ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Admin Actions -->
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div class="space-y-3">
+              
+              <div th:if="${userRole == 'ADMIN'}">
+                <a href="/admin/generate-report" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-colors text-left flex items-center block">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                  </svg>
+                  Generate Report
+                </a>
+              </div>
+              <button class="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors text-left flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                System Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Quick Actions Grid -->
       <!-- Di bagian admin section, tambahkan: -->
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -453,36 +584,7 @@
           </a>
         </div>
 
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
-        >
-          <div
-            class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4"
-          >
-            <svg
-              class="w-6 h-6 text-yellow-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">View Reports</h3>
-          <p class="text-gray-600 text-sm mb-4">
-            Check your appointment history and statistics
-          </p>
-          <button
-            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg transition-colors"
-          >
-            View Reports
-          </button>
-        </div>
+        
         <!-- Service Management Card -->
         <div
           th:if="${userRole == 'ADMIN'}"
@@ -735,32 +837,39 @@
                   <span th:text="${booking.time}"></span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <form
-                    th:action="@{/bookings/{id}/status(id=${booking.id})}"
-                    method="post"
-                    class="inline"
-                  >
-                    <input type="hidden" name="status" value="DITERIMA" />
-                    <button
-                      type="submit"
-                      class="text-green-600 hover:text-green-900 mr-3"
+                  <!-- Hanya EMPLOYEE yang bisa accept/reject -->
+                  <div th:if="${userRole == 'EMPLOYEE'}">
+                    <form
+                      th:action="@{/bookings/{id}/status(id=${booking.id})}"
+                      method="post"
+                      class="inline"
                     >
-                      Accept
-                    </button>
-                  </form>
-                  <form
-                    th:action="@{/bookings/{id}/status(id=${booking.id})}"
-                    method="post"
-                    class="inline"
-                  >
-                    <input type="hidden" name="status" value="BATAL" />
-                    <button
-                      type="submit"
-                      class="text-red-600 hover:text-red-900"
+                      <input type="hidden" name="status" value="DITERIMA" />
+                      <button
+                        type="submit"
+                        class="text-green-600 hover:text-green-900 mr-3"
+                      >
+                        Accept
+                      </button>
+                    </form>
+                    <form
+                      th:action="@{/bookings/{id}/status(id=${booking.id})}"
+                      method="post"
+                      class="inline"
                     >
-                      Reject
-                    </button>
-                  </form>
+                      <input type="hidden" name="status" value="BATAL" />
+                      <button
+                        type="submit"
+                        class="text-red-600 hover:text-red-900"
+                      >
+                        Reject
+                      </button>
+                    </form>
+                  </div>
+                  <!-- ADMIN hanya bisa melihat status -->
+                  <div th:if="${userRole == 'ADMIN'}">
+                    <span class="text-gray-500 text-sm">View Only</span>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -830,19 +939,26 @@
                   <span th:text="${booking.time}"></span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <form
-                    th:action="@{/bookings/{id}/status(id=${booking.id})}"
-                    method="post"
-                    class="inline"
-                  >
-                    <input type="hidden" name="status" value="SELESAI" />
-                    <button
-                      type="submit"
-                      class="text-green-600 hover:text-green-900 mr-3"
+                  <!-- Hanya EMPLOYEE yang bisa menandai selesai -->
+                  <div th:if="${userRole == 'EMPLOYEE'}">
+                    <form
+                      th:action="@{/bookings/{id}/status(id=${booking.id})}"
+                      method="post"
+                      class="inline"
                     >
-                      Selesai
-                    </button>
-                  </form>
+                      <input type="hidden" name="status" value="SELESAI" />
+                      <button
+                        type="submit"
+                        class="text-green-600 hover:text-green-900 mr-3"
+                      >
+                        Selesai
+                      </button>
+                    </form>
+                  </div>
+                  <!-- ADMIN hanya bisa melihat -->
+                  <div th:if="${userRole == 'ADMIN'}">
+                    <span class="text-gray-500 text-sm">View Only</span>
+                  </div>
                 </td>
               </tr>
             </tbody>

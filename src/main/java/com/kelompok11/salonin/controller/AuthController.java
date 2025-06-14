@@ -115,21 +115,21 @@ public class AuthController {
         if (user.getRole() == User.Role.ADMIN) {
             // Admin can see all bookings
             bookings = bookingService.getAllBookings();
-            model.addAttribute("allBookings", bookings);
+            
+            // Add analytics data for admin
+            model.addAttribute("totalRevenue", calculateTotalRevenue());
+            model.addAttribute("totalCustomers", userService.getCustomerCount());
+            model.addAttribute("totalBookings", bookingService.getBookingCountThisMonth());
+            model.addAttribute("averageRating", reviewService.getOverallAverageRating());
+            
         } else if (user.getRole() == User.Role.EMPLOYEE) {
             // Employee can see bookings assigned to them
             bookings = bookingService.getBookingsByEmployee(user);
-            model.addAttribute("allBookings", bookings);
+            
             // Add pending bookings for employees
-            List<Booking> pendingBookings = bookings.stream()
-                .filter(b -> b.getStatus() == Booking.Status.PENDING)
-                .collect(Collectors.toList());
+            List<Booking> pendingBookings = bookingService.getPendingBookingsByEmployee(user);
             model.addAttribute("pendingBookings", pendingBookings);
-            List<Booking> acceptedBookings = bookings.stream()
-                .filter(b -> b.getStatus() == Booking.Status.DITERIMA)
-                .collect(Collectors.toList());
-            model.addAttribute("acceptedBookings", acceptedBookings);
-        } else {
+        } else if (user.getRole() == User.Role.CUSTOMER) {
             // Customer can only see their own bookings
             bookings = bookingService.getBookingsByCustomer(user);
             model.addAttribute("bookings", bookings); 
@@ -142,9 +142,23 @@ public class AuthController {
             boolean hasSelesaiBooking = bookings.stream()
                 .anyMatch(b -> b.getStatus() == Booking.Status.SELESAI);
             model.addAttribute("hasSelesaiBooking", hasSelesaiBooking);
+        } else {
+            // Customer can see their own bookings
+            bookings = bookingService.getBookingsByUser(user);
         }
+        model.addAttribute("allBookings", bookings);
+        List<Booking> acceptedBookings = bookings.stream()
+                .filter(b -> b.getStatus() == Booking.Status.DITERIMA)
+                .collect(Collectors.toList());
+            model.addAttribute("acceptedBookings", acceptedBookings);
+        // The closing brace was misplaced - removing it since it's redundant
         
         return "dashboard";
+    }
+    
+    private Double calculateTotalRevenue() {
+        // Implement revenue calculation logic
+        return bookingService.getTotalRevenueThisMonth();
     }
     
     @GetMapping("/login")

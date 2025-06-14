@@ -266,7 +266,6 @@
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-8">
       <!-- Breadcrumb -->
-      
 
       <!-- Branch Header -->
       <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
@@ -642,7 +641,7 @@
                 >
               </div>
             </div>
-            
+
             <!-- Review Content -->
             <div class="flex-1 min-w-0">
               <!-- Header -->
@@ -661,11 +660,14 @@
                     Service Name
                   </p>
                 </div>
-                
+
                 <!-- Rating -->
                 <div class="flex flex-col items-end ml-4">
                   <div class="flex items-center space-x-1 mb-1">
-                    <div th:each="star : ${#numbers.sequence(1, 5)}" class="flex">
+                    <div
+                      th:each="star : ${#numbers.sequence(1, 5)}"
+                      class="flex"
+                    >
                       <svg
                         th:class="${star <= review.rate} ? 'w-5 h-5 text-yellow-400' : 'w-5 h-5 text-gray-300'"
                         fill="currentColor"
@@ -684,7 +686,7 @@
                   >
                 </div>
               </div>
-              
+
               <!-- Review Description -->
               <div
                 th:if="${review.description != null and !review.description.isEmpty()}"
@@ -697,11 +699,21 @@
                   Review description
                 </p>
               </div>
-              
+
               <!-- Date -->
               <div class="flex items-center text-xs text-gray-500">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <svg
+                  class="w-4 h-4 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
                 </svg>
                 <span
                   th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy, HH:mm')}"
@@ -719,7 +731,9 @@
         th:if="${reviews == null or reviews.isEmpty()}"
         class="text-center py-12"
       >
-        <div class="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+        <div
+          class="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6"
+        >
           <svg
             class="w-10 h-10 text-gray-400"
             fill="none"
@@ -734,7 +748,9 @@
             ></path>
           </svg>
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 mb-3">Belum ada review</h3>
+        <h3 class="text-xl font-semibold text-gray-900 mb-3">
+          Belum ada review
+        </h3>
         <p class="text-gray-600 text-lg">
           Jadilah yang pertama memberikan review untuk cabang ini!
         </p>

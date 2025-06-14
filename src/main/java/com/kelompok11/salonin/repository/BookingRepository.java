@@ -2,9 +2,12 @@ package com.kelompok11.salonin.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
 import java.util.List;
 
 import com.kelompok11.salonin.model.Booking;
+import com.kelompok11.salonin.model.Booking.Status;
 import com.kelompok11.salonin.model.User;
 
 @Repository
@@ -29,4 +32,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByOrderByDateDescTimeAsc();
     List<Booking> findByUserOrderByDateDesc(User user);
     List<Booking> findByEmployeeOrderByDateDesc(User employee);
+    List<Booking> findByDateBetweenAndStatus(LocalDate startOfMonth, LocalDate endOfMonth, Status selesai);
+    Long countByDateBetween(LocalDate startOfMonth, LocalDate endOfMonth);
 }

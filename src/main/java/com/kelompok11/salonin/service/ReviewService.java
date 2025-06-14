@@ -52,7 +52,12 @@ public class ReviewService {
     public Long getBranchReviewCount(Long branchId) {
         return reviewRepository.getReviewCountByBranchId(branchId);
     }
-
+    
+    public Double getOverallAverageRating() {
+        Double average = reviewRepository.getOverallAverageRating();
+        return average != null ? Math.round(average * 10.0) / 10.0 : 0.0;
+    }
+    
     public static Double getAverageRatingForBranch(Long id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAverageRatingForBranch'");

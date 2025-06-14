@@ -1,125 +1,181 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Seniora Beauty Salon</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Inter', sans-serif; }
+      body {
+        font-family: "Inter", sans-serif;
+      }
     </style>
-</head>
-<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+  </head>
+  <body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white/80 backdrop-blur-md shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/" class="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">Salonin</a>
-                </div>
-                
-                <!-- Auth Links -->
-                <div class="flex items-center space-x-4">
-                    <a href="/register" class="text-gray-700 hover:text-rose-600 transition-colors">Don't have an account? Register</a>
-                </div>
-            </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex items-center">
+            <a
+              href="/"
+              class="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent"
+              >Salonin</a
+            >
+          </div>
+
+          <!-- Auth Links -->
+          <div class="flex items-center space-x-4">
+            <a
+              href="/register"
+              class="text-gray-700 hover:text-rose-600 transition-colors"
+              >Don't have an account? Register</a
+            >
+          </div>
         </div>
+      </div>
     </nav>
 
     <!-- Login Form -->
-    <div class="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl w-full flex items-center space-x-12">
-            <!-- Left Side - Form -->
-            <div class="w-full max-w-md">
-                <div class="bg-white rounded-2xl shadow-2xl p-8">
-                    <div class="text-center mb-8">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-                        <p class="text-gray-600">Sign in to your Seniora account</p>
-                    </div>
-
-                    <!-- Success/Error Messages -->
-                    <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                        <span th:text="${successMessage}"></span>
-                    </div>
-                    <div th:if="${param.error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        <span>Invalid email or password. Please try again.</span>
-                    </div>
-                    <div th:if="${param.logout}" class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
-                        <span>You have been logged out successfully.</span>
-                    </div>
-
-                    <form th:action="@{/login}" method="post" class="space-y-6">
-                        <!-- Email Field -->
-                        <div>
-                            <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                            <input type="email" 
-                                   id="username" 
-                                   name="username"
-                                   required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                                   placeholder="Enter your email">
-                        </div>
-
-                        <!-- Password Field -->
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                            <input type="password" 
-                                   id="password" 
-                                   name="password"
-                                   required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                                   placeholder="Enter your password">
-                        </div>
-
-                        <!-- Remember Me -->
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <input type="checkbox" 
-                                       id="remember-me" 
-                                       name="remember-me"
-                                       class="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded">
-                                <label for="remember-me" class="ml-2 block text-sm text-gray-700">
-                                    Remember me
-                                </label>
-                            </div>
-                            <a href="#" class="text-sm text-rose-600 hover:text-rose-700 transition-colors">
-                                Forgot password?
-                            </a>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" 
-                                class="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white py-3 px-4 rounded-lg hover:from-rose-600 hover:to-pink-700 focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 transition-all duration-200 font-medium">
-                            Sign In
-                        </button>
-                    </form>
-
-                    <!-- Register Link -->
-                    <div class="text-center mt-6">
-                        <p class="text-gray-600">
-                            Don't have an account? 
-                            <a href="/register" class="text-rose-600 hover:text-rose-700 font-medium transition-colors">Create one here</a>
-                        </p>
-                    </div>
-                </div>
+    <div
+      class="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <div class="max-w-4xl w-full flex items-center space-x-12">
+        <!-- Left Side - Form -->
+        <div class="w-full max-w-md">
+          <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="text-center mb-8">
+              <h2 class="text-3xl font-bold text-gray-900 mb-2">
+                Welcome Back
+              </h2>
+              <p class="text-gray-600">Sign in to your Seniora account</p>
             </div>
 
-            <!-- Right Side - Image -->
-            <div class="hidden lg:block lg:w-1/2">
-                <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                         alt="Beauty salon services" 
-                         class="rounded-2xl shadow-2xl w-full h-96 object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-rose-500/20 to-transparent rounded-2xl"></div>
-                    <div class="absolute bottom-8 left-8 text-white">
-                        <h3 class="text-2xl font-bold mb-2">Ready to Shine?</h3>
-                        <p class="text-rose-100">Book your beauty appointment today</p>
-                    </div>
-                </div>
+            <!-- Success/Error Messages -->
+            <div
+              th:if="${successMessage}"
+              class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+            >
+              <span th:text="${successMessage}"></span>
             </div>
+            <div
+              th:if="${param.error}"
+              class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+            >
+              <span>Invalid email or password. Please try again.</span>
+            </div>
+            <div
+              th:if="${param.logout}"
+              class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4"
+            >
+              <span>You have been logged out successfully.</span>
+            </div>
+
+            <form th:action="@{/login}" method="post" class="space-y-6">
+              <!-- Email Field -->
+              <div>
+                <label
+                  for="username"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  id="username"
+                  name="username"
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <!-- Password Field -->
+              <div>
+                <label
+                  for="password"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                  placeholder="Enter your password"
+                />
+              </div>
+
+              <!-- Remember Me -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="remember-me"
+                    name="remember-me"
+                    class="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                  />
+                  <label
+                    for="remember-me"
+                    class="ml-2 block text-sm text-gray-700"
+                  >
+                    Remember me
+                  </label>
+                </div>
+                <a
+                  href="#"
+                  class="text-sm text-rose-600 hover:text-rose-700 transition-colors"
+                >
+                  Forgot password?
+                </a>
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                class="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white py-3 px-4 rounded-lg hover:from-rose-600 hover:to-pink-700 focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 transition-all duration-200 font-medium"
+              >
+                Sign In
+              </button>
+            </form>
+
+            <!-- Register Link -->
+            <div class="text-center mt-6">
+              <p class="text-gray-600">
+                Don't have an account?
+                <a
+                  href="/register"
+                  class="text-rose-600 hover:text-rose-700 font-medium transition-colors"
+                  >Create one here</a
+                >
+              </p>
+            </div>
+          </div>
         </div>
+
+        <!-- Right Side - Image -->
+        <div class="hidden lg:block lg:w-1/2">
+          <div class="relative">
+            <img
+              src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              alt="Beauty salon services"
+              class="rounded-2xl shadow-2xl w-full h-96 object-cover"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-rose-500/20 to-transparent rounded-2xl"
+            ></div>
+            <div class="absolute bottom-8 left-8 text-white">
+              <h3 class="text-2xl font-bold mb-2">Ready to Shine?</h3>
+              <p class="text-rose-100">Book your beauty appointment today</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Footer -->
@@ -156,5 +212,5 @@
         <p class="text-center text-gray-400 mt-4">&copy;2025 Salonin</p>
       </div>
     </footer>
-</body>
+  </body>
 </html>

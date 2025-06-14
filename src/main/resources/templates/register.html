@@ -1,121 +1,174 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - Seniora Beauty Salon</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Inter', sans-serif; }
+      body {
+        font-family: "Inter", sans-serif;
+      }
     </style>
-</head>
-<body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
+  </head>
+  <body class="bg-gradient-to-br from-pink-50 to-rose-100 min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white/80 backdrop-blur-md shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/" class="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">Salonin</a>
-                </div>
-                
-                <!-- Auth Links -->
-                <div class="flex items-center space-x-4">
-                    <a href="/login" class="text-gray-700 hover:text-rose-600 transition-colors">Already have an account? Login</a>
-                </div>
-            </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex items-center">
+            <a
+              href="/"
+              class="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent"
+              >Salonin</a
+            >
+          </div>
+
+          <!-- Auth Links -->
+          <div class="flex items-center space-x-4">
+            <a
+              href="/login"
+              class="text-gray-700 hover:text-rose-600 transition-colors"
+              >Already have an account? Login</a
+            >
+          </div>
         </div>
+      </div>
     </nav>
 
     <!-- Register Form -->
-    <div class="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl w-full flex items-center space-x-12">
-            <!-- Left Side - Form -->
-            <div class="w-full max-w-md">
-                <div class="bg-white rounded-2xl shadow-2xl p-8">
-                    <div class="text-center mb-8">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-                        <p class="text-gray-600">Join Salonin and discover your beauty</p>
-                    </div>
-                
-
-                    <!-- Success/Error Messages -->
-                    <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                        <span th:text="${successMessage}"></span>
-                    </div>
-                    <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        <span th:text="${errorMessage}"></span>
-                    </div>
-
-                    <form th:action="@{/register}" th:object="${user}" method="post" class="space-y-6">
-                        <!-- Name Field -->
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                            <input type="text" 
-                                id="name" 
-                                th:field="*{name}"
-                                required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                                placeholder="Enter your full name">
-                        </div>
-
-                        <!-- Email Field -->
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                            <input type="email" 
-                                id="email" 
-                                th:field="*{email}"
-                                required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                                placeholder="Enter your email">
-                        </div>
-
-                        <!-- Password Field -->
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                            <input type="password" 
-                                id="password" 
-                                th:field="*{password}"
-                                required
-                                minlength="6"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
-                                placeholder="Create a password (min. 6 characters)">
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" 
-                                class="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white py-3 px-4 rounded-lg hover:from-rose-600 hover:to-pink-700 focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 transition-all duration-200 font-medium">
-                            Create Account
-                        </button>
-                    </form>
-
-                    <!-- Login Link -->
-                    <div class="text-center mt-6">
-                        <p class="text-gray-600">
-                            Already have an account? 
-                            <a href="/login" class="text-rose-600 hover:text-rose-700 font-medium transition-colors">Sign in here</a>
-                        </p>
-                    </div>
-                </div>
+    <div
+      class="flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <div class="max-w-4xl w-full flex items-center space-x-12">
+        <!-- Left Side - Form -->
+        <div class="w-full max-w-md">
+          <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="text-center mb-8">
+              <h2 class="text-3xl font-bold text-gray-900 mb-2">
+                Create Account
+              </h2>
+              <p class="text-gray-600">Join Salonin and discover your beauty</p>
             </div>
-            <!-- Right Side - Image -->
-            <div class="hidden lg:block lg:w-1/2 ml-12">
-                <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                         alt="Beauty salon interior" 
-                         class="rounded-2xl shadow-2xl w-full h-96 object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-rose-500/20 to-transparent rounded-2xl"></div>
-                    <div class="absolute bottom-8 left-8 text-white">
-                        <h3 class="text-2xl font-bold mb-2">Welcome to Seniora</h3>
-                        <p class="text-rose-100">Your journey to beauty starts here</p>
-                    </div>
-                </div>
+
+            <!-- Success/Error Messages -->
+            <div
+              th:if="${successMessage}"
+              class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+            >
+              <span th:text="${successMessage}"></span>
             </div>
+            <div
+              th:if="${errorMessage}"
+              class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+            >
+              <span th:text="${errorMessage}"></span>
+            </div>
+
+            <form
+              th:action="@{/register}"
+              th:object="${user}"
+              method="post"
+              class="space-y-6"
+            >
+              <!-- Name Field -->
+              <div>
+                <label
+                  for="name"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  >Full Name</label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  th:field="*{name}"
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <!-- Email Field -->
+              <div>
+                <label
+                  for="email"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  th:field="*{email}"
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <!-- Password Field -->
+              <div>
+                <label
+                  for="password"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  id="password"
+                  th:field="*{password}"
+                  required
+                  minlength="6"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-colors"
+                  placeholder="Create a password (min. 6 characters)"
+                />
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                class="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white py-3 px-4 rounded-lg hover:from-rose-600 hover:to-pink-700 focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 transition-all duration-200 font-medium"
+              >
+                Create Account
+              </button>
+            </form>
+
+            <!-- Login Link -->
+            <div class="text-center mt-6">
+              <p class="text-gray-600">
+                Already have an account?
+                <a
+                  href="/login"
+                  class="text-rose-600 hover:text-rose-700 font-medium transition-colors"
+                  >Sign in here</a
+                >
+              </p>
+            </div>
+          </div>
         </div>
+        <!-- Right Side - Image -->
+        <div class="hidden lg:block lg:w-1/2 ml-12">
+          <div class="relative">
+            <img
+              src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+              alt="Beauty salon interior"
+              class="rounded-2xl shadow-2xl w-full h-96 object-cover"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-rose-500/20 to-transparent rounded-2xl"
+            ></div>
+            <div class="absolute bottom-8 left-8 text-white">
+              <h3 class="text-2xl font-bold mb-2">Welcome to Seniora</h3>
+              <p class="text-rose-100">Your journey to beauty starts here</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    
 
     <!-- Footer -->
     <footer
@@ -151,5 +204,5 @@
         <p class="text-center text-gray-400 mt-4">&copy;2025 Salonin</p>
       </div>
     </footer>
-</body>
+  </body>
 </html>
