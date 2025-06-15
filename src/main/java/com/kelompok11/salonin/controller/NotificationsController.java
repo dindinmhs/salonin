@@ -59,12 +59,7 @@ public class NotificationsController {
         
         return ResponseEntity.ok(response);
     }
-    
-    // Menghapus endpoint API yang tidak diperlukan
-    // @GetMapping("/api/list")
-    // @ResponseBody
-    // public ResponseEntity<List<Notifications>> getNotifications() { ... }
-    
+
     // Mengubah endpoint mark as read menjadi form submission
     @PostMapping("/{id}/read")
     public String markAsRead(@PathVariable Long id, RedirectAttributes redirectAttributes) {

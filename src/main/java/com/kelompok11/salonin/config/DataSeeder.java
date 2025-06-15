@@ -22,17 +22,6 @@ public class DataSeeder implements CommandLineRunner {
     }
     
     private void seedUsers() {
-        // Create Admin account if not exists
-        if (!userRepository.existsByEmail("admin@seniora.com")) {
-            User admin = new User();
-            admin.setName("Administrator");
-            admin.setEmail("admin@seniora.com");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setRole(User.Role.ADMIN);
-            userRepository.save(admin);
-            System.out.println("Admin account created: admin@seniora.com / admin123");
-        }
-
         
         if (!userRepository.existsByEmail("admin2@seniora.com")) {
             User admin = new User();

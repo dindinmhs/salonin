@@ -44,26 +44,18 @@ public class BookingController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> createBooking(@ModelAttribute("bookingRequest") Booking request) {
         Map<String, Object> response = new HashMap<>();
-        
         try {
-            // Get current authenticated user
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String email = auth.getName();
             User user = userService.findByEmail(email);
-            
-            // Get complete Service object from database
+
             Service service = serviceService.getServiceById(request.getService().getId())
                 .orElseThrow(() -> new RuntimeException("Service not found"));
-            
-            // Get available employee from the same branch as the service
-            List<User> employees = userService.getEmployeesByBranch(service.getBranch().getId());
-            if (employees.isEmpty()) {
-                throw new RuntimeException("No employee available for this branch");
-            }
-            
-            // Select the first available employee (you can implement more sophisticated logic here)
-            User employee = employees.get(0);
-            
+
+            // Ambil employee berdasarkan ID yang dipilih user
+            User employee = userService.getUserById(request.getEmployee().getId())
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
             Booking booking = bookingService.createBooking(user, employee, 
                 service, request.getDate(), request.getTime());
             
